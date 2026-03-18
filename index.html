@@ -3,436 +3,710 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="ORSCAN — AI-powered website intelligence scanner. Get SEO analysis, performance insights, security checks, critical feedback, and actionable recommendations—in seconds.">
-<title>ORSCAN — Website Intelligence Scanner</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<meta name="description" content="ORSCAN — AI-powered website & crypto wallet intelligence. Scan websites, track whale wallets, and detect meme coin trends in real time.">
+<title>ORSCAN — Website & Crypto Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
+/* ── RESET ───────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:#f7f5f0;color:#2c2a26;font-family:'DM Sans',sans-serif;line-height:1.6;cursor:default;overflow-x:hidden}
-::selection{background:#2c2a26;color:#f7f5f0}
+body{background:#FAFAF8;color:#1A1916;font-family:'DM Sans',sans-serif;line-height:1.65;overflow-x:hidden}
+::selection{background:#1A1916;color:#FAFAF8}
 ::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:#f7f5f0}
-::-webkit-scrollbar-thumb{background:#c8c5bc}
+::-webkit-scrollbar-track{background:#FAFAF8}
+::-webkit-scrollbar-thumb{background:#C8C4BC}
 a{text-decoration:none;color:inherit}
-button{cursor:pointer;font-family:inherit}
+img{max-width:100%}
+
+/* ── DESIGN TOKENS ───────────────────────────────────── */
 :root{
-  --ink:#2c2a26;
-  --paper:#f7f5f0;
-  --warm:#ede9e0;
-  --stone:#e2ded6;
-  --mist:#d4d0c8;
-  --slate:#8c8880;
-  --dim:#b8b4ac;
-  --bdr:1.5px solid #d0ccc4;
-  --bdr-dark:1.5px solid #2c2a26;
-  --shadow:0 1px 3px rgba(44,42,38,.06),0 4px 12px rgba(44,42,38,.04);
-  --shadow-md:0 2px 8px rgba(44,42,38,.08),0 8px 24px rgba(44,42,38,.06);
+  --ink:    #1A1916;
+  --paper:  #FAFAF8;
+  --cream:  #F2F0EB;
+  --sand:   #E8E4DC;
+  --mist:   #D4D0C8;
+  --stone:  #A09C94;
+  --warm:   #6B6760;
+  --deep:   #2E2C28;
+  --green:  #4A7C59;
+  --amber:  #C07840;
+
+  --r-sm:   6px;
+  --r-md:   10px;
+  --r-lg:   16px;
+
+  --bdr:    1px solid #E0DDD5;
+  --bdr-dk: 1px solid #C8C4BC;
+
+  --sh-xs:  0 1px 3px rgba(26,25,22,.06);
+  --sh-sm:  0 2px 8px rgba(26,25,22,.07),0 1px 2px rgba(26,25,22,.05);
+  --sh-md:  0 4px 16px rgba(26,25,22,.08),0 2px 4px rgba(26,25,22,.05);
+  --sh-lg:  0 8px 32px rgba(26,25,22,.10),0 2px 8px rgba(26,25,22,.06);
 }
 
-/* NOISE */
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9998;opacity:.5}
+/* ── TICKER ──────────────────────────────────────────── */
+.ticker{
+  background:var(--deep);color:#D4D0C8;
+  height:36px;display:flex;align-items:center;overflow:hidden;
+  font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;
+}
+.ticker-inner{display:flex;animation:ticker 32s linear infinite;white-space:nowrap}
+.ticker-inner span{padding:0 28px;border-right:1px solid #4A4740;opacity:.8}
+.ticker-inner span.hi{color:#FAFAF8;opacity:1}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-/* TICKER */
-.ticker{background:#3a3731;color:#e8e4da;height:34px;display:flex;align-items:center;overflow:hidden;border-bottom:var(--bdr);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px}
-.ticker-track{display:flex;gap:0;animation:tickerAnim 28s linear infinite;white-space:nowrap}
-.ticker-track span{padding:0 28px;border-right:1px solid #4a4740}
-@keyframes tickerAnim{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* NAV */
-nav{position:sticky;top:0;z-index:100;background:#3a3731;color:#e8e4da;display:flex;align-items:center;justify-content:space-between;height:56px;border-bottom:var(--bdr);padding:0 20px;box-shadow:0 1px 0 rgba(0,0,0,.08)}
-.nav-logo{display:flex;align-items:center;gap:10px}
-.logo-box{width:40px;height:40px;border:1.5px solid #6a6660;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.logo-txt{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:5px;color:#e8e4da;line-height:1}
-.logo-sub{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:2px;color:#7a7670;display:block;margin-top:1px}
-.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:6px}
-.hamburger span{display:block;width:22px;height:1.5px;background:#e8e4da;transition:all .2s}
-.nav-links{display:flex;gap:0;align-items:center}
-.nav-links a{color:#b8b4aa;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:0 16px;height:56px;display:flex;align-items:center;border-left:1px solid #4a4740;transition:all .15s}
-.nav-links a:hover{color:#e8e4da;background:#45423e}
-.nav-cta{background:#e8e4da!important;color:#2c2a26!important;font-weight:600!important;border-radius:2px}
-.nav-cta:hover{background:#f7f5f0!important;color:#2c2a26!important}
-#mob-menu{display:none;position:fixed;inset:0;top:56px;background:#3a3731;z-index:99;flex-direction:column;border-top:var(--bdr)}
+/* ── NAV ─────────────────────────────────────────────── */
+nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(250,250,248,.97);
+  backdrop-filter:blur(12px);
+  border-bottom:var(--bdr);
+  height:60px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;
+  box-shadow:var(--sh-xs);
+}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo-mark{
+  width:36px;height:36px;border-radius:var(--r-sm);
+  background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.nav-logo-mark svg{width:22px;height:22px}
+.nav-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;color:var(--ink);line-height:1}
+.nav-tag{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--stone);display:block;margin-top:1px;text-transform:uppercase}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:6px;cursor:pointer}
+.hamburger span{display:block;width:20px;height:1.5px;background:var(--ink);transition:all .2s;border-radius:2px}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a{
+  color:var(--warm);font-family:'Space Mono',monospace;font-size:10px;
+  letter-spacing:1px;text-transform:uppercase;
+  padding:7px 14px;border-radius:var(--r-sm);
+  transition:all .15s;
+}
+.nav-links a:hover{background:var(--cream);color:var(--ink)}
+.nav-links .nav-cta{
+  background:var(--ink);color:var(--paper);
+  margin-left:8px;
+  box-shadow:var(--sh-xs);
+}
+.nav-links .nav-cta:hover{background:var(--deep);color:var(--paper)}
+#mob-menu{
+  display:none;position:fixed;inset:0;top:60px;
+  background:var(--paper);z-index:199;
+  flex-direction:column;padding:16px;gap:4px;
+  border-top:var(--bdr);
+}
 #mob-menu.open{display:flex}
-#mob-menu a{color:#b8b4aa;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:20px 24px;border-bottom:1px solid #4a4740;display:block}
-#mob-menu a:hover{background:#45423e;color:#e8e4da}
+#mob-menu a{
+  color:var(--warm);font-family:'Space Mono',monospace;font-size:11px;
+  letter-spacing:1px;text-transform:uppercase;
+  padding:14px 16px;border-radius:var(--r-sm);
+  transition:background .15s;
+}
+#mob-menu a:hover{background:var(--cream);color:var(--ink)}
 
-/* HERO */
-.hero{padding:56px 24px 0;border-bottom:var(--bdr);display:grid;grid-template-columns:1fr 1fr;gap:0}
-.hero-l{padding-right:48px;padding-bottom:56px;border-right:var(--bdr)}
-.hero-r{padding-left:48px;padding-bottom:56px;display:flex;flex-direction:column;justify-content:space-between}
-.eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--slate);margin-bottom:24px;display:flex;align-items:center;gap:12px}
-.eyebrow::before{content:'';width:28px;height:1px;background:var(--mist)}
-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,9.5vw,114px);line-height:.9;letter-spacing:-1px;margin-bottom:28px;color:var(--ink)}
-h1 .out{-webkit-text-stroke:1.5px var(--ink);color:transparent;display:block}
-.hero-desc{font-size:15px;color:var(--slate);line-height:1.85;max-width:440px;margin-bottom:36px}
-.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px}
-.btn-p{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--paper);border:1.5px solid var(--ink);padding:15px 30px;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:3px;transition:all .2s;border-radius:3px;box-shadow:var(--shadow)}
-.btn-p:hover{background:#484440;border-color:#484440;transform:translateY(-1px);box-shadow:var(--shadow-md)}
-.btn-p svg{width:17px;height:17px;transition:transform .2s}
-.btn-p:hover svg{transform:translateX(4px)}
-.btn-g{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--ink);border:1.5px solid var(--mist);padding:13px 26px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;transition:all .2s;border-radius:3px}
-.btn-g:hover{background:var(--warm);border-color:var(--stone)}
-.hero-tags{display:flex;flex-wrap:wrap;gap:8px}
-.tag{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:5px 11px;border:1px solid var(--stone);color:var(--slate);border-radius:2px;background:var(--warm)}
-.tag-dk{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+/* ── HERO ─────────────────────────────────────────────── */
+.hero{
+  padding:72px 24px 64px;
+  display:grid;grid-template-columns:1fr 1fr;gap:64px;
+  border-bottom:var(--bdr);
+  max-width:1280px;margin:0 auto;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--stone);background:var(--cream);border:var(--bdr);
+  padding:5px 12px;border-radius:20px;margin-bottom:20px;
+}
+.hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(52px,8vw,88px);
+  line-height:.92;letter-spacing:-1px;
+  margin-bottom:20px;color:var(--ink);
+}
+h1 em{font-style:normal;color:var(--stone)}
+.hero-desc{
+  font-size:17px;color:var(--warm);line-height:1.75;
+  max-width:460px;margin-bottom:32px;
+}
+.hero-desc strong{color:var(--ink)}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:9px;
+  background:var(--ink);color:var(--paper);
+  padding:14px 28px;border-radius:var(--r-md);
+  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;
+  border:1.5px solid var(--ink);
+  transition:all .2s;box-shadow:var(--sh-sm);
+  cursor:pointer;
+}
+.btn-primary:hover{background:var(--deep);transform:translateY(-1px);box-shadow:var(--sh-md)}
+.btn-primary svg{width:16px;height:16px;transition:transform .2s}
+.btn-primary:hover svg{transform:translateX(3px)}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:9px;
+  background:var(--paper);color:var(--ink);
+  padding:13px 24px;border-radius:var(--r-md);
+  font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;
+  border:1.5px solid var(--mist);
+  transition:all .2s;cursor:pointer;
+}
+.btn-ghost:hover{background:var(--cream);border-color:var(--stone)}
+.hero-pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{
+  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:5px 12px;border-radius:20px;border:var(--bdr);
+  color:var(--stone);background:var(--cream);
+}
+.pill-dark{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.pill-green{background:#EEF5F1;color:var(--green);border-color:#C8DDD0}
 
-.hero-visual{border:var(--bdr);background:#3a3731;padding:20px;margin-bottom:20px;overflow:hidden;border-radius:4px;box-shadow:var(--shadow)}
-.scan-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;color:#6a6660;text-transform:uppercase;margin-bottom:12px}
-.scan-lines{display:flex;flex-direction:column;gap:8px}
-.sln{height:7px;background:#4a4740;border-radius:2px;position:relative;overflow:hidden}
-.sln::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:#c8c0b0;animation:sl 2.4s ease-in-out infinite;border-radius:2px}
-.sln:nth-child(2)::after{animation-delay:.3s}
-.sln:nth-child(3)::after{animation-delay:.6s}
-.sln:nth-child(4)::after{animation-delay:.9s}
-.sln:nth-child(5)::after{animation-delay:1.2s}
-@keyframes sl{0%{left:-100%}50%{left:0}100%{left:100%}}
-.score-row{display:flex;gap:0;border:1px solid #4a4740;margin-top:16px;border-radius:3px;overflow:hidden}
-.sc-item{flex:1;padding:10px 6px;text-align:center;border-right:1px solid #4a4740}
-.sc-item:last-child{border-right:none}
-.sc-n{font-family:'Bebas Neue',sans-serif;font-size:24px;color:#e8e4da;display:block;line-height:1}
-.sc-l{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:1px;color:#6a6660;text-transform:uppercase}
+/* hero right */
+.hero-r{display:flex;flex-direction:column;gap:16px}
+.hero-card{
+  background:var(--deep);border-radius:var(--r-lg);
+  padding:20px;box-shadow:var(--sh-lg);
+  overflow:hidden;
+}
+.hc-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;color:#6A6760;text-transform:uppercase;margin-bottom:14px}
+.scan-bars{display:flex;flex-direction:column;gap:7px}
+.sbar{height:7px;border-radius:4px;background:#3A3830;position:relative;overflow:hidden}
+.sbar::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#9A9690,#C8C0B0);border-radius:4px;animation:scan 2.6s ease-in-out infinite}
+.sbar:nth-child(2)::after{animation-delay:.3s}
+.sbar:nth-child(3)::after{animation-delay:.6s}
+.sbar:nth-child(4)::after{animation-delay:.9s}
+.sbar:nth-child(5)::after{animation-delay:1.2s}
+@keyframes scan{0%{transform:translateX(-100%)}50%{transform:translateX(0)}100%{transform:translateX(100%)};}
+.s90{width:90%}.s75{width:75%}.s60{width:60%}.s45{width:45%}.s30{width:30%}
+.score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:14px}
+.sg{background:#3A3830;border-radius:6px;padding:10px 6px;text-align:center}
+.sg-n{font-family:'Bebas Neue',sans-serif;font-size:22px;color:#E8E4DA;display:block;line-height:1}
+.sg-l{font-family:'Space Mono',monospace;font-size:7px;color:#6A6760;letter-spacing:1px;text-transform:uppercase}
 
-.hstats{display:grid;grid-template-columns:repeat(3,1fr);border:var(--bdr);border-bottom:none;border-radius:4px 4px 0 0;overflow:hidden}
-.hs{padding:18px 14px;border-right:var(--bdr);border-bottom:var(--bdr);background:var(--warm)}
-.hs:last-child{border-right:none}
-.hs-n{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;display:block;color:var(--ink)}
-.hs-l{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--slate);margin-top:3px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.hs-card{background:var(--cream);border:var(--bdr);border-radius:var(--r-md);padding:16px 14px}
+.hs-n{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--ink);line-height:1;display:block}
+.hs-l{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--stone);margin-top:3px}
 
-/* MARQUEE */
-.mq{border-bottom:var(--bdr);height:48px;overflow:hidden;display:flex;align-items:center;background:var(--warm)}
-.mq-track{display:flex;animation:mq 22s linear infinite;white-space:nowrap}
-.mq-track span{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:4px;color:var(--slate);padding:0 28px;border-right:1px solid var(--stone)}
-.mq-track span.sep{color:var(--mist);font-size:14px}
+/* orynth badge */
+.orynth-wrap{display:flex;align-items:center}
+
+/* ── MARQUEE ─────────────────────────────────────────── */
+.mq-strip{
+  background:var(--cream);border-top:var(--bdr);border-bottom:var(--bdr);
+  height:44px;overflow:hidden;display:flex;align-items:center;
+}
+.mq-inner{display:flex;animation:mq 24s linear infinite;white-space:nowrap}
+.mq-inner span{
+  font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:3px;
+  color:var(--stone);padding:0 24px;border-right:var(--bdr);
+}
+.mq-inner span.hi{color:var(--ink)}
 @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-/* SCAN SECTION */
-.scan-sec{background:#3a3731;color:#e8e4da;padding:68px 24px;border-bottom:var(--bdr);position:relative;overflow:hidden}
-.scan-bg{position:absolute;bottom:-50px;right:-20px;font-family:'Bebas Neue',sans-serif;font-size:260px;color:rgba(255,255,255,.03);letter-spacing:10px;pointer-events:none;line-height:1}
-.scan-in{position:relative;z-index:2;max-width:820px;margin:0 auto}
-.scan-kicker{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#7a7670;margin-bottom:8px}
-.scan-hl{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5.5vw,60px);line-height:1;margin-bottom:36px;color:#e8e4da}
-.scan-hl em{font-style:normal;-webkit-text-stroke:1px #c8c0b0;color:transparent}
-.input-wrap{display:flex;border:1.5px solid #5a5750;border-radius:4px;margin-bottom:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.2)}
-.inp-pre{padding:0 16px;background:#2e2c28;font-family:'Space Mono',monospace;font-size:10px;color:#7a7670;display:flex;align-items:center;border-right:1.5px solid #5a5750;white-space:nowrap;letter-spacing:1px}
-#url-in{flex:1;background:transparent;border:none;outline:none;padding:17px 18px;font-family:'Space Mono',monospace;font-size:14px;color:#e8e4da;caret-color:#c8c0b0;min-width:0}
-#url-in::placeholder{color:#5a5750}
-.btn-scan{background:#c8c0b0;color:#2c2a26;border:none;padding:0 28px;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:3px;transition:all .15s;white-space:nowrap}
-.btn-scan:hover{background:#d8d0c0}
-.scan-opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
-.sopt{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#7a7670;padding:8px 14px;border:1px solid #4a4740;border-radius:3px;cursor:pointer;transition:all .15s;user-select:none}
-.sopt input{display:none}
-.sopt .dot{width:8px;height:8px;border:1px solid #6a6660;border-radius:1px;flex-shrink:0}
-.sopt.chk{color:#e8e4da;border-color:#8a8480;background:#45423e}
-.sopt.chk .dot{background:#c8c0b0;border-color:#c8c0b0}
-.sopt:hover{border-color:#6a6660;color:#b8b0a8}
-.scan-note{font-family:'Space Mono',monospace;font-size:10px;color:#6a6660;letter-spacing:1px}
-.scan-note b{color:#9a9690}
+/* ── SCAN SECTION ────────────────────────────────────── */
+.scan-sec{
+  background:var(--deep);color:#E8E4DA;
+  padding:72px 24px;border-bottom:var(--bdr);
+  position:relative;overflow:hidden;
+}
+.scan-ghost{
+  position:absolute;bottom:-60px;right:-20px;
+  font-family:'Bebas Neue',sans-serif;font-size:280px;
+  color:rgba(255,255,255,.025);letter-spacing:8px;
+  pointer-events:none;line-height:1;
+}
+.scan-inner{position:relative;z-index:2;max-width:840px;margin:0 auto}
+.scan-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#6A6760;margin-bottom:10px}
+.scan-hl{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(32px,5vw,58px);line-height:1;
+  margin-bottom:32px;color:#E8E4DA;
+}
+.scan-hl em{font-style:normal;-webkit-text-stroke:1px #9A9690;color:transparent}
 
-/* PROGRESS */
-#prog{display:none;margin-top:24px}
-.prog-lbl{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;color:#9a9690;text-transform:uppercase;display:flex;justify-content:space-between;margin-bottom:8px}
-.prog-bar{background:#2e2c28;height:3px;overflow:hidden;border-radius:2px}
-.prog-fill{height:100%;background:#c8c0b0;width:0;transition:width .35s ease;border-radius:2px}
-.prog-steps{display:flex;border:1px solid #4a4740;margin-top:14px;overflow-x:auto;border-radius:3px;overflow:hidden}
-.ps{flex:1;min-width:80px;padding:10px 8px;border-right:1px solid #4a4740;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:#5a5750;transition:all .3s;text-align:center}
+/* tab switcher */
+.scan-tabs{display:flex;gap:0;border:1px solid #4A4740;border-radius:var(--r-md);overflow:hidden;margin-bottom:24px;width:fit-content}
+.stab{
+  font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  padding:10px 20px;background:transparent;border:none;color:#6A6760;
+  cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:7px;
+}
+.stab:not(:last-child){border-right:1px solid #4A4740}
+.stab.active{background:#4A4740;color:#E8E4DA}
+.stab:hover:not(.active){background:#3A3830;color:#B8B4AA}
+
+/* website scan input */
+.scan-panel{display:none}
+.scan-panel.active{display:block}
+.url-row{display:flex;border:1.5px solid #5A5750;border-radius:var(--r-md);overflow:hidden;margin-bottom:14px;background:#252320}
+.url-pre{padding:0 16px;font-family:'Space Mono',monospace;font-size:10px;color:#5A5750;display:flex;align-items:center;border-right:1px solid #4A4740;white-space:nowrap;letter-spacing:1px}
+#url-in{flex:1;background:transparent;border:none;outline:none;padding:16px 18px;font-family:'Space Mono',monospace;font-size:13px;color:#E8E4DA;caret-color:#C8C0B0;min-width:0}
+#url-in::placeholder{color:#4A4740}
+.btn-scan{background:#C8C0B0;color:#1A1916;border:none;padding:0 26px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.btn-scan:hover{background:#D8D0C0}
+
+/* wallet scan input */
+.wallet-row{display:flex;border:1.5px solid #5A5750;border-radius:var(--r-md);overflow:hidden;margin-bottom:14px;background:#252320}
+.wallet-pre{padding:0 16px;font-family:'Space Mono',monospace;font-size:10px;color:#5A5750;display:flex;align-items:center;border-right:1px solid #4A4740;white-space:nowrap;letter-spacing:1px}
+#wallet-in{flex:1;background:transparent;border:none;outline:none;padding:16px 18px;font-family:'Space Mono',monospace;font-size:12px;color:#E8E4DA;caret-color:#C8C0B0;min-width:0}
+#wallet-in::placeholder{color:#4A4740}
+.btn-wallet{background:#4A7C59;color:#FAFAF8;border:none;padding:0 26px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.btn-wallet:hover{background:#5A8C69}
+
+.chain-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.chain-opt{
+  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:7px 14px;border:1px solid #4A4740;border-radius:var(--r-sm);
+  color:#6A6760;cursor:pointer;transition:all .15s;user-select:none;
+}
+.chain-opt.active{border-color:#C8C0B0;color:#E8E4DA;background:#3A3830}
+.chain-opt:hover:not(.active){border-color:#7A7670;color:#B8B4AA}
+
+.scan-modules{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.smod{
+  display:flex;align-items:center;gap:7px;
+  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  color:#6A6760;padding:7px 13px;border:1px solid #3A3830;border-radius:var(--r-sm);
+  cursor:pointer;transition:all .15s;user-select:none;
+}
+.smod input{display:none}
+.smod .check{width:8px;height:8px;border:1px solid #5A5750;border-radius:2px;flex-shrink:0}
+.smod.on{color:#E8E4DA;border-color:#7A7670;background:#3A3830}
+.smod.on .check{background:#C8C0B0;border-color:#C8C0B0}
+.scan-note{font-family:'Space Mono',monospace;font-size:10px;color:#5A5750;letter-spacing:.5px}
+.scan-note b{color:#8A8680}
+
+/* progress */
+#prog{display:none;margin-top:22px}
+.prog-top{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:#7A7670;text-transform:uppercase;margin-bottom:7px}
+.prog-track{background:#2A2820;height:3px;border-radius:2px;overflow:hidden}
+.prog-bar{height:100%;background:#C8C0B0;width:0;transition:width .35s ease;border-radius:2px}
+.prog-steps{display:flex;border:1px solid #3A3830;border-radius:var(--r-sm);margin-top:14px;overflow:hidden;overflow-x:auto}
+.ps{flex:1;min-width:76px;padding:10px 6px;border-right:1px solid #3A3830;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:#3A3830;text-align:center;transition:all .3s}
 .ps:last-child{border-right:none}
-.ps.active{color:#e8e4da;background:#4a4740}
-.ps.done{color:#8a8480}
-.ps .pi{font-size:13px;display:block;margin-bottom:4px}
+.ps.on{color:#E8E4DA;background:#3A3830}
+.ps.done{color:#6A6760}
+.ps-ic{font-size:13px;display:block;margin-bottom:3px}
 
-/* RESULTS */
+/* ── RESULTS ─────────────────────────────────────────── */
 #res-sec{display:none;background:var(--paper);border-bottom:var(--bdr)}
-.res-hd{display:flex;align-items:center;justify-content:space-between;padding:22px 24px;border-bottom:var(--bdr);flex-wrap:wrap;gap:14px;background:var(--warm)}
-.res-si{display:flex;align-items:center;gap:14px}
-.res-fav{width:40px;height:40px;border:var(--bdr);border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:18px;background:var(--ink);color:var(--paper);flex-shrink:0}
-.res-url{font-family:'Space Mono',monospace;font-size:10px;color:var(--slate);letter-spacing:1px}
-.res-title{font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:2px;color:var(--ink)}
-.res-meta{display:flex;gap:8px;flex-wrap:wrap}
-.res-bdg{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:5px 10px;border:var(--bdr);cursor:pointer;border-radius:2px;color:var(--slate)}
-.res-bdg.fill{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.res-scores{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:var(--bdr);background:var(--paper)}
-.rsc{padding:22px 12px;border-right:var(--bdr);text-align:center}
-.rsc:last-child{border-right:none}
-.rsc-circ{width:58px;height:58px;border-radius:50%;border:1.5px solid var(--stone);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;background:var(--warm)}
-.rsc-n{font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1;color:var(--ink)}
-.rsc-l{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--slate)}
-.rsc.hi .rsc-circ{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.rsc.hi .rsc-n{color:var(--paper)}
-.rsc.md .rsc-circ{background:var(--warm);border-color:var(--mist)}
-.rsc.lo .rsc-circ{background:var(--stone);border-color:var(--mist);border-style:dashed}
-.res-grid{display:grid;grid-template-columns:2fr 1fr;gap:0;border-bottom:var(--bdr)}
-.res-main{border-right:var(--bdr)}
-.rb{border-bottom:var(--bdr);padding:26px 22px}
-.rb:last-child{border-bottom:none}
-.rb-hdr{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.rb-ico{width:32px;height:32px;border:var(--bdr);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;background:var(--warm)}
-.rb-ttl{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2px;color:var(--ink)}
-.rb-bdg{margin-left:auto;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:4px 8px;border:var(--bdr);border-radius:2px;color:var(--slate)}
-.rb-bdg.ok{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.rb-bdg.wn{border-style:dashed;color:var(--slate)}
-.rb-bdg.fl{background:var(--stone);color:var(--ink)}
-.issue-list{display:flex;flex-direction:column;gap:8px}
-.issue{display:flex;gap:12px;padding:12px;border:var(--bdr);background:var(--warm);border-radius:3px}
-.issue-ico{width:18px;height:18px;flex-shrink:0;margin-top:2px;font-size:13px}
-.i-type{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--slate);margin-bottom:2px}
-.i-ttl{font-size:13px;font-weight:600;margin-bottom:2px;color:var(--ink)}
-.i-desc{font-size:12px;color:var(--slate);line-height:1.5}
-.issue.crit{border-color:#b8a090;border-width:1.5px;background:#faf6f2}
-.issue.warn{border-color:var(--mist)}
-.issue.good{border-color:var(--stone);background:transparent}
-.sb-blk{border-bottom:var(--bdr);padding:18px}
-.sb-blk:last-child{border-bottom:none}
-.sb-ttl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:3px;margin-bottom:12px;color:var(--ink)}
-.mn-list{display:flex;flex-direction:column;gap:5px}
-.mn-item{display:flex;justify-content:space-between;align-items:center;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;padding:7px 9px;border:var(--bdr);border-radius:2px;background:var(--warm)}
-.mn-v.ok{color:var(--ink);font-weight:700}
-.mn-v.wn{color:#9a7a60;font-weight:700}
-.mn-v.fl{color:var(--dim);text-decoration:line-through;font-weight:700}
+.res-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 24px;border-bottom:var(--bdr);background:var(--cream);
+  flex-wrap:wrap;gap:12px;
+}
+.res-site{display:flex;align-items:center;gap:12px}
+.res-avi{
+  width:38px;height:38px;border-radius:var(--r-sm);
+  background:var(--ink);color:var(--paper);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:17px;flex-shrink:0;
+}
+.res-url{font-family:'Space Mono',monospace;font-size:10px;color:var(--stone)}
+.res-domain{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--ink)}
+.res-actions{display:flex;gap:8px;flex-wrap:wrap}
+.res-btn{
+  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:6px 12px;border:var(--bdr);border-radius:var(--r-sm);
+  color:var(--stone);cursor:pointer;background:var(--paper);transition:all .15s;
+}
+.res-btn:hover{border-color:var(--mist);color:var(--ink)}
+.res-btn.dark{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.scores-row{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  border-bottom:var(--bdr);
+}
+.sc{padding:20px 12px;border-right:var(--bdr);text-align:center}
+.sc:last-child{border-right:none}
+.sc-ring{
+  width:54px;height:54px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 8px;border:2px solid var(--sand);
+  background:var(--cream);
+}
+.sc-n{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--ink);line-height:1}
+.sc-l{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--stone)}
+.sc.hi .sc-ring{background:var(--ink);border-color:var(--ink)}
+.sc.hi .sc-n{color:var(--paper)}
+.sc.md .sc-ring{background:var(--cream);border-color:var(--mist)}
+.sc.lo .sc-ring{border-style:dashed}
 
-/* AI AGENT */
-.ai-sec{background:#3a3731;color:#e8e4da;border-bottom:var(--bdr)}
-.ai-in{display:grid;grid-template-columns:1fr 1fr;gap:0}
-.ai-l{padding:64px 44px;border-right:1px solid #4a4740}
-.ai-r{padding:64px 44px}
-.ai-badge{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#7a7670;border:1px solid #4a4740;border-radius:20px;padding:6px 14px;margin-bottom:20px}
-.blinkdot{width:8px;height:8px;border-radius:50%;background:#c8c0b0;animation:blk 1.2s step-end infinite}
-@keyframes blk{0%,100%{opacity:1}50%{opacity:0}}
-.ai-ttl{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,4.5vw,55px);line-height:1;margin-bottom:14px;color:#e8e4da}
-.ai-ttl em{font-style:normal;-webkit-text-stroke:1px #9a9690;color:transparent}
-.ai-desc{font-size:14px;color:#9a9690;line-height:1.7;margin-bottom:26px;max-width:380px}
-.ai-feats{display:flex;flex-direction:column;gap:0;border:1px solid #4a4740;border-radius:4px;overflow:hidden}
-.aif{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;border-bottom:1px solid #4a4740}
+.res-grid{display:grid;grid-template-columns:2fr 1fr;border-bottom:var(--bdr)}
+.res-main{border-right:var(--bdr)}
+.issue-grp{border-bottom:var(--bdr);padding:22px 20px}
+.issue-grp:last-child{border-bottom:none}
+.ig-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.ig-ico{width:30px;height:30px;border-radius:var(--r-sm);background:var(--cream);border:var(--bdr);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ig-ttl{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:var(--ink)}
+.ig-badge{margin-left:auto;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border:var(--bdr);border-radius:var(--r-sm);color:var(--stone)}
+.ig-badge.ok{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.ig-badge.fl{background:var(--sand);color:var(--warm);border-color:var(--mist)}
+.ig-badge.wn{border-style:dashed}
+.issue-list{display:flex;flex-direction:column;gap:7px}
+.issue{display:flex;gap:10px;padding:12px;border:var(--bdr);border-radius:var(--r-sm);background:var(--cream)}
+.issue.crit{border-color:#DEB8A0;background:#FDF8F5}
+.issue.warn{border-color:var(--mist)}
+.issue.good{background:var(--paper)}
+.i-ico{font-size:14px;flex-shrink:0;margin-top:1px}
+.i-mod{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--stone);margin-bottom:2px}
+.i-ttl{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.i-desc{font-size:12px;color:var(--stone);line-height:1.55}
+
+.res-side{}
+.sb{border-bottom:var(--bdr);padding:16px 18px}
+.sb:last-child{border-bottom:none}
+.sb-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--ink);margin-bottom:10px}
+.sb-list{display:flex;flex-direction:column;gap:5px}
+.sb-row{display:flex;justify-content:space-between;align-items:center;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;padding:7px 10px;border:var(--bdr);border-radius:var(--r-sm);background:var(--cream)}
+.sb-v.ok{color:var(--ink);font-weight:700}
+.sb-v.wn{color:var(--amber);font-weight:700}
+.sb-v.fl{color:var(--mist);font-weight:700;text-decoration:line-through}
+
+/* ── WHALE SCANNER SECTION ───────────────────────────── */
+.whale-sec{
+  border-bottom:var(--bdr);padding:72px 24px;
+  background:var(--cream);
+}
+.whale-inner{max-width:1200px;margin:0 auto}
+.whale-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:48px;gap:20px;flex-wrap:wrap}
+.whale-kicker{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--stone);margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.whale-kicker::before{content:'';width:20px;height:1px;background:var(--mist)}
+.whale-hl{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5.5vw,64px);line-height:.94;color:var(--ink);letter-spacing:-0.5px}
+.whale-hl em{font-style:normal;-webkit-text-stroke:1.5px var(--ink);color:transparent}
+.whale-desc{font-size:14px;color:var(--stone);line-height:1.7;max-width:320px}
+
+.whale-new-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  background:#EEF5F1;color:var(--green);
+  border:1px solid #C8DDD0;border-radius:20px;
+  padding:4px 12px;margin-bottom:10px;
+}
+.whale-new-badge .ndot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+
+.whale-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+.wcard{
+  background:var(--paper);border:var(--bdr);border-radius:var(--r-lg);
+  padding:24px;
+  box-shadow:var(--sh-sm);
+  transition:box-shadow .2s,transform .2s;
+}
+.wcard:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.wcard-ico{
+  width:44px;height:44px;border-radius:var(--r-md);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:14px;
+}
+.wcard-ico.green{background:#EEF5F1}
+.wcard-ico.amber{background:#FEF6ED}
+.wcard-ico.blue{background:#EDF2FE}
+.wcard-ico.purple{background:#F3EEFE}
+.wcard-ico.red{background:#FEEDED}
+.wcard-ico.teal{background:#EDFAF6}
+.wcard-ttl{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--ink);margin-bottom:6px}
+.wcard-desc{font-size:13px;color:var(--stone);line-height:1.6;margin-bottom:12px}
+.wcard-tag{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border:var(--bdr);border-radius:20px;color:var(--stone);display:inline-block}
+.wcard-tag.new{border-color:#C8DDD0;color:var(--green);background:#EEF5F1}
+.wcard-tag.hot{border-color:#F0C8A0;color:var(--amber);background:#FEF6ED}
+
+/* whale live feed */
+.whale-feed{
+  background:var(--deep);border-radius:var(--r-lg);
+  padding:24px;box-shadow:var(--sh-lg);
+}
+.wf-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.wf-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#E8E4DA}
+.wf-live{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:#6A6760;text-transform:uppercase}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#4A7C59;animation:pulse 1.5s infinite}
+.wf-list{display:flex;flex-direction:column;gap:6px}
+.wf-row{
+  display:grid;grid-template-columns:auto 1fr auto auto;
+  gap:12px;align-items:center;
+  padding:10px 14px;background:#2A2820;border-radius:var(--r-sm);
+}
+.wf-type{font-size:15px;flex-shrink:0}
+.wf-info{}
+.wf-wallet{font-family:'Space Mono',monospace;font-size:10px;color:#C8C0B0;margin-bottom:1px}
+.wf-token{font-family:'Space Mono',monospace;font-size:9px;color:#6A6760;letter-spacing:1px}
+.wf-amount{font-family:'Bebas Neue',sans-serif;font-size:18px;line-height:1;text-align:right}
+.wf-amount.buy{color:#6DBF83}
+.wf-amount.sell{color:#E07070}
+.wf-time{font-family:'Space Mono',monospace;font-size:9px;color:#4A4740;white-space:nowrap}
+
+/* ── FEATURES SECTION ────────────────────────────────── */
+.feat-sec{border-bottom:var(--bdr);padding:72px 24px;background:var(--paper)}
+.feat-inner{max-width:1200px;margin:0 auto}
+.sec-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:44px;gap:20px;flex-wrap:wrap}
+.sec-kicker{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--stone);margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.sec-kicker::before{content:'';width:20px;height:1px;background:var(--mist)}
+.sec-ttl{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5.5vw,64px);line-height:.94;color:var(--ink);letter-spacing:-.5px}
+.sec-ttl em{font-style:normal;-webkit-text-stroke:1.5px var(--ink);color:transparent}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr-dk, #C8C4BC);border:var(--bdr-dk, 1px solid #C8C4BC);border-radius:var(--r-lg);overflow:hidden}
+.fc{padding:28px 24px;background:var(--paper);transition:background .2s}
+.fc:hover{background:var(--cream)}
+.fc-ico{width:40px;height:40px;border-radius:var(--r-sm);background:var(--cream);border:var(--bdr);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px}
+.fc-ttl{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1px;color:var(--ink);margin-bottom:7px}
+.fc-desc{font-size:13px;color:var(--stone);line-height:1.6;margin-bottom:12px}
+.fc-tag{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border:var(--bdr);border-radius:20px;color:var(--stone);display:inline-block}
+.fc-tag.pm{border-style:dashed}
+.fc-tag.new{border-color:#C8DDD0;color:var(--green);background:#EEF5F1}
+
+/* ── HOW IT WORKS ────────────────────────────────────── */
+.how-sec{border-bottom:var(--bdr);padding:72px 24px;background:var(--cream)}
+.how-inner{max-width:1200px;margin:0 auto}
+.steps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#C8C4BC;border:1px solid #C8C4BC;border-radius:var(--r-lg);overflow:hidden}
+.step{padding:28px 24px;background:var(--paper);position:relative}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:64px;color:var(--sand);position:absolute;top:12px;right:16px;line-height:1}
+.step-ico{width:42px;height:42px;border-radius:var(--r-sm);background:var(--cream);border:var(--bdr);display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:14px;position:relative;z-index:1}
+.step-ttl{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1px;color:var(--ink);margin-bottom:7px;position:relative;z-index:1}
+.step-d{font-size:13px;color:var(--stone);line-height:1.6;position:relative;z-index:1}
+
+/* ── AI AGENT ────────────────────────────────────────── */
+.ai-sec{background:var(--deep);color:#E8E4DA;border-bottom:var(--bdr)}
+.ai-inner{display:grid;grid-template-columns:1fr 1fr;max-width:1200px;margin:0 auto}
+.ai-l{padding:64px 48px;border-right:1px solid #3A3730}
+.ai-r{padding:64px 48px}
+.ai-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:#6A6760;border:1px solid #3A3730;border-radius:20px;
+  padding:5px 13px;margin-bottom:20px;
+}
+.blink{width:7px;height:7px;border-radius:50%;background:#C8C0B0;animation:pulse 1.4s step-end infinite}
+.ai-ttl{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,52px);line-height:1;margin-bottom:14px}
+.ai-ttl em{font-style:normal;-webkit-text-stroke:1px #7A7670;color:transparent}
+.ai-desc{font-size:14px;color:#8A8680;line-height:1.7;margin-bottom:24px;max-width:380px}
+.ai-feats{display:flex;flex-direction:column;border:1px solid #3A3730;border-radius:var(--r-md);overflow:hidden}
+.aif{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;border-bottom:1px solid #3A3730}
 .aif:last-child{border-bottom:none}
-.aif-ico{width:30px;height:30px;border:1px solid #5a5750;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;background:#45423e}
-.aif-nm{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;margin-bottom:2px;color:#e8e4da}
-.aif-d{font-size:12px;color:#7a7670;line-height:1.5}
-.ai-chat{border:1px solid #4a4740;background:#2e2c28;height:400px;display:flex;flex-direction:column;border-radius:6px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.3)}
-.ch-hdr{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #4a4740;background:#3a3731}
-.ch-av{width:30px;height:30px;border:1px solid #5a5750;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;background:#45423e;flex-shrink:0}
-.ch-nm{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:#e8e4da}
-.ch-st{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;color:#6a6660;display:flex;align-items:center;gap:5px}
-.st-dot{width:5px;height:5px;border-radius:50%;background:#8a9a80;animation:blk 1.5s infinite}
-.ch-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px}
-.ch-msgs::-webkit-scrollbar{width:3px}
-.ch-msgs::-webkit-scrollbar-thumb{background:#4a4740}
-.msg{max-width:86%}
-.msg-a{align-self:flex-start}
-.msg-u{align-self:flex-end}
-.msg-bbl{padding:10px 13px;font-size:12px;line-height:1.6;border-radius:4px}
-.msg-a .msg-bbl{background:#45423e;color:#d8d4ca;border:1px solid #5a5750}
-.msg-u .msg-bbl{background:#c8c0b0;color:#2c2a26;border:1px solid #b8b0a0}
-.msg-t{font-family:'Space Mono',monospace;font-size:8px;color:#5a5750;margin-top:3px;letter-spacing:1px}
-.msg-u .msg-t{text-align:right}
-.typing{display:flex;gap:4px;align-items:center;padding:10px 13px;background:#45423e;border:1px solid #5a5750;width:fit-content;border-radius:4px}
-.typing span{width:5px;height:5px;border-radius:50%;background:#7a7670;animation:bounce 1.2s infinite}
+.aif-ico{width:30px;height:30px;border:1px solid #4A4740;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;background:#3A3830}
+.aif-ttl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;margin-bottom:2px;color:#E8E4DA}
+.aif-desc{font-size:12px;color:#6A6760;line-height:1.5}
+/* chat */
+.chat-box{border:1px solid #3A3730;border-radius:var(--r-lg);background:#252320;height:400px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.chat-hdr{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid #3A3730;background:#2E2C28}
+.chat-avi{width:30px;height:30px;border-radius:50%;border:1px solid #4A4740;display:flex;align-items:center;justify-content:center;font-size:13px;background:#3A3830;flex-shrink:0}
+.chat-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:#E8E4DA}
+.chat-status{font-family:'Space Mono',monospace;font-size:8px;color:#5A5750;display:flex;align-items:center;gap:5px;letter-spacing:1px}
+.status-dot{width:5px;height:5px;border-radius:50%;background:#6DBF83;animation:pulse 2s infinite}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px}
+.chat-msgs::-webkit-scrollbar{width:3px}
+.chat-msgs::-webkit-scrollbar-thumb{background:#3A3830}
+.msg{max-width:85%}
+.msg-bot{align-self:flex-start}
+.msg-usr{align-self:flex-end}
+.msg-bbl{padding:10px 13px;font-size:12px;line-height:1.6;border-radius:var(--r-sm)}
+.msg-bot .msg-bbl{background:#3A3830;color:#D8D4CA;border:1px solid #4A4740}
+.msg-usr .msg-bbl{background:#C8C0B0;color:#1A1916;border:1px solid #B8B0A0}
+.msg-time{font-family:'Space Mono',monospace;font-size:8px;color:#4A4740;margin-top:3px}
+.msg-usr .msg-time{text-align:right}
+.typing{display:flex;gap:4px;align-items:center;padding:10px 13px;background:#3A3830;border:1px solid #4A4740;border-radius:var(--r-sm);width:fit-content}
+.typing span{width:5px;height:5px;border-radius:50%;background:#6A6760;animation:bounce 1.2s infinite}
 .typing span:nth-child(2){animation-delay:.2s}
 .typing span:nth-child(3){animation-delay:.4s}
 @keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
-.ch-inp{display:flex;border-top:1px solid #4a4740}
-#chat-in{flex:1;background:transparent;border:none;outline:none;padding:13px 14px;font-family:'Space Mono',monospace;font-size:11px;color:#d8d4ca;caret-color:#c8c0b0}
-#chat-in::placeholder{color:#4a4740}
-.ch-send{background:#c8c0b0;color:#2c2a26;border:none;padding:0 16px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;transition:background .15s;border-left:1px solid #5a5750}
-.ch-send:hover{background:#d8d0c0}
+.chat-input{display:flex;border-top:1px solid #3A3730}
+#chat-in{flex:1;background:transparent;border:none;outline:none;padding:13px 14px;font-family:'Space Mono',monospace;font-size:11px;color:#E8E4DA;caret-color:#C8C0B0}
+#chat-in::placeholder{color:#3A3830}
+.chat-send{background:#C8C0B0;color:#1A1916;border:none;padding:0 16px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;cursor:pointer;transition:background .15s;border-left:1px solid #3A3730}
+.chat-send:hover{background:#D8D0C0}
 
-/* FEATURES */
-.feat-sec{border-bottom:var(--bdr);padding:68px 24px;background:var(--paper)}
-.sec-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:44px;flex-wrap:wrap;gap:16px}
-.sec-kk{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--slate);margin-bottom:8px;display:flex;align-items:center;gap:10px}
-.sec-kk::before{content:'';width:22px;height:1px;background:var(--mist)}
-.sec-ttl{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,72px);line-height:.94;letter-spacing:-1px;color:var(--ink)}
-.sec-ttl .out{-webkit-text-stroke:1.5px var(--ink);color:transparent}
-.feats{display:grid;grid-template-columns:repeat(3,1fr);border:var(--bdr);border-right:none;border-bottom:none;border-radius:4px 0 0 0;overflow:hidden}
-.fc{padding:30px 26px;border-right:var(--bdr);border-bottom:var(--bdr);transition:all .2s;background:var(--paper)}
-.fc:hover{background:var(--warm);transform:none}
-.fc:hover .fc-ico{border-color:var(--mist);background:var(--stone)}
-.fc:hover .fc-tag{border-color:var(--mist)}
-.fc:hover .fc-desc{color:var(--slate)}
-.fc-ico{width:42px;height:42px;border:var(--bdr);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:14px;transition:all .2s;background:var(--warm)}
-.fc-ttl{font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:2px;margin-bottom:7px;color:var(--ink)}
-.fc-desc{font-size:13px;color:var(--slate);line-height:1.6;margin-bottom:14px;transition:color .2s}
-.fc-tag{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border:var(--bdr);display:inline-block;transition:all .2s;border-radius:2px;color:var(--slate)}
-.fc-tag.pm{border-style:dashed;color:var(--dim)}
+/* ── PRICING ─────────────────────────────────────────── */
+.price-sec{background:var(--deep);color:#E8E4DA;padding:72px 24px;border-bottom:var(--bdr)}
+.price-inner{max-width:900px;margin:0 auto}
+.price-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#5A5750;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.price-eyebrow::before{content:'';width:18px;height:1px;background:#4A4740}
+.price-hl{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5.5vw,64px);line-height:.94;margin-bottom:44px;-webkit-text-stroke:1px #7A7670;color:transparent}
+.price-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid #4A4740;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-lg)}
+.pc{padding:40px 36px}
+.pc:first-child{border-right:1px solid #4A4740}
+.pc-tier{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#5A5750;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.pc-tier::before{content:'';width:16px;height:1px;background:#4A4740}
+.pc-price{font-family:'Bebas Neue',sans-serif;font-size:68px;line-height:.9;margin-bottom:4px;color:#E8E4DA}
+.pc-per{font-family:'Space Mono',monospace;font-size:10px;color:#5A5750;letter-spacing:1.5px;margin-bottom:24px}
+.pc-feats{display:flex;flex-direction:column;gap:9px;margin-bottom:28px}
+.pf{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:#6A6760;font-family:'DM Sans',sans-serif}
+.pf-chk{width:15px;height:15px;border:1px solid #4A4740;border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:8px}
+.pf.on{color:#C8C4BA}
+.pf.on .pf-chk{background:#C8C0B0;color:#1A1916;border-color:#C8C0B0}
+.pc-btn{width:100%;padding:14px;border:none;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;transition:all .2s;border-radius:var(--r-sm)}
+.pc-btn-free{background:transparent;color:#E8E4DA;border:1px solid #5A5750}
+.pc-btn-free:hover{background:#3A3830;border-color:#8A8680}
+.pc-btn-pro{background:#C8C0B0;color:#1A1916}
+.pc-btn-pro:hover{background:#D8D0C0}
+.pop-tag{display:inline-block;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;background:#C8C0B0;color:#1A1916;border-radius:3px;margin-bottom:8px}
+.pc-dark{background:#252320}
 
-/* PRICING */
-.price-sec{background:#3a3731;color:#e8e4da;padding:68px 24px;border-bottom:var(--bdr)}
-.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #5a5750;max-width:900px;margin:0 auto;border-radius:6px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.2)}
-.pc{padding:44px 36px}
-.pc:first-child{border-right:1px solid #4a4740}
-.pt{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#7a7670;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.pt::before{content:'';width:18px;height:1px;background:#5a5750}
-.pn{font-family:'Bebas Neue',sans-serif;font-size:76px;line-height:.88;margin-bottom:4px;color:#e8e4da}
-.pu{font-family:'Space Mono',monospace;font-size:10px;color:#7a7670;letter-spacing:2px;margin-bottom:26px}
-.pfeats{display:flex;flex-direction:column;gap:9px;margin-bottom:32px}
-.pf{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:#7a7670}
-.pchk{width:15px;height:15px;border:1px solid #5a5750;border-radius:2px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:8px}
-.pf.inc{color:#c8c4ba}
-.pf.inc .pchk{background:#c8c0b0;color:#2c2a26;border-color:#c8c0b0}
-.btn-pf{width:100%;padding:15px;border:none;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:3px;cursor:pointer;transition:all .2s;border-radius:3px}
-.btn-free{background:transparent;color:#e8e4da;border:1px solid #6a6660}
-.btn-free:hover{background:#45423e;border-color:#8a8480}
-.btn-pro{background:#c8c0b0;color:#2c2a26}
-.btn-pro:hover{background:#d8d0c0}
-.pop-bdg{display:inline-block;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;background:#c8c0b0;color:#2c2a26;margin-bottom:8px;border-radius:2px}
-.pc-dark{background:#2e2c28}
-
-/* HOW */
-.how-sec{border-bottom:var(--bdr);padding:68px 24px;background:var(--warm)}
-.steps{display:grid;grid-template-columns:repeat(4,1fr);border:var(--bdr);border-right:none;border-radius:4px 0 0 4px;overflow:hidden}
-.step{padding:32px 24px;border-right:var(--bdr);position:relative;background:var(--paper)}
-.step-n{font-family:'Bebas Neue',sans-serif;font-size:76px;line-height:.9;color:var(--stone);position:absolute;top:14px;right:18px}
-.step-ico{width:44px;height:44px;border:var(--bdr);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;position:relative;z-index:1;background:var(--warm)}
-.step-ttl{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-bottom:7px;position:relative;z-index:1;color:var(--ink)}
-.step-d{font-size:13px;color:var(--slate);line-height:1.6;position:relative;z-index:1}
-
-/* APP */
-.app-sec{background:#3a3731;color:#e8e4da;border-bottom:var(--bdr)}
-.app-in{display:grid;grid-template-columns:1fr 1fr;gap:0}
-.app-l{padding:68px 44px;border-right:1px solid #4a4740}
-.app-r{padding:68px 44px;display:flex;align-items:center;justify-content:center}
-.app-kk{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#7a7670;margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.app-kk::before{content:'';width:18px;height:1px;background:#5a5750}
-.app-ttl{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,65px);line-height:.94;margin-bottom:18px;color:#e8e4da}
-.app-ttl em{font-style:normal;-webkit-text-stroke:1px #9a9690;color:transparent}
-.app-desc{font-size:14px;color:#9a9690;line-height:1.7;margin-bottom:32px;max-width:400px}
-.store-btns{display:flex;gap:12px;flex-wrap:wrap}
-.stbtn{display:flex;align-items:center;gap:12px;padding:13px 20px;border:1px solid #6a6660;border-radius:3px;transition:all .2s;cursor:pointer;color:#c8c4ba;min-width:155px;background:#45423e}
-.stbtn:hover{background:#5a5750;border-color:#9a9690;color:#e8e4da}
-.stbtn:hover .st-lbl-sub{color:#b8b4aa}
-.st-ico{width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.st-lbl-sub{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;color:#7a7670;text-transform:uppercase;transition:color .15s}
-.st-lbl-main{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:3px;line-height:1;color:#e8e4da}
-
-/* PHONE MOCKUP */
-.phone{width:210px;border:2px solid #6a6660;background:#2e2c28;position:relative;padding:36px 0 18px;border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
-.phone::before{content:'';position:absolute;top:14px;left:50%;transform:translateX(-50%);width:54px;height:7px;border-radius:4px;background:#4a4740}
-.ph-hdr{padding:10px 12px 7px;display:flex;align-items:center;gap:7px;border-bottom:1px solid #3a3731}
-.ph-logo{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:#e8e4da}
-.ph-dot{width:5px;height:5px;border-radius:50%;background:#8a9a80;animation:blk 2s infinite;margin-left:auto}
-.ph-body{padding:10px 12px}
-.ph-url{background:#3a3731;border:1px solid #4a4740;border-radius:3px;padding:7px 9px;font-family:'Space Mono',monospace;font-size:7px;color:#6a6660;margin-bottom:9px;letter-spacing:1px}
-.ph-scs{display:flex;gap:4px;margin-bottom:7px}
-.ph-sc{flex:1;padding:7px 3px;text-align:center;border:1px solid #3a3731;background:#353330;border-radius:3px}
-.ph-sc-n{font-family:'Bebas Neue',sans-serif;font-size:17px;color:#e8e4da;display:block;line-height:1}
-.ph-sc-l{font-family:'Space Mono',monospace;font-size:6px;color:#6a6660;letter-spacing:1px}
-.ph-iss{display:flex;gap:5px;padding:5px 7px;border:1px solid #3a3731;background:#353330;margin-bottom:3px;font-family:'Space Mono',monospace;font-size:7px;color:#7a7670;letter-spacing:.5px;align-items:flex-start;border-radius:2px}
-.ph-d{width:5px;height:5px;border-radius:50%;background:#6a6660;margin-top:2px;flex-shrink:0}
-.ph-foot{font-family:'Space Mono',monospace;font-size:7px;color:#6a6660;letter-spacing:1px;margin-top:8px;border-top:1px solid #3a3731;padding-top:7px}
-
-/* TESTIMONIALS */
-.testi-sec{border-bottom:var(--bdr);padding:68px 24px;background:var(--paper)}
-.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);border:var(--bdr);border-right:none;border-bottom:none;border-radius:4px 0 0 0;overflow:hidden}
-.tc{padding:28px 24px;border-right:var(--bdr);border-bottom:var(--bdr);background:var(--paper);transition:background .2s}
-.tc:hover{background:var(--warm)}
-.tc-stars{font-size:14px;margin-bottom:10px;letter-spacing:3px;color:#c8a060}
-.tc-q{font-size:13px;line-height:1.75;color:var(--slate);margin-bottom:18px;font-style:italic}
+/* ── TESTIMONIALS ────────────────────────────────────── */
+.testi-sec{border-bottom:var(--bdr);padding:72px 24px;background:var(--paper)}
+.testi-inner{max-width:1200px;margin:0 auto}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#C8C4BC;border:1px solid #C8C4BC;border-radius:var(--r-lg);overflow:hidden}
+.tc{padding:24px;background:var(--paper);transition:background .2s}
+.tc:hover{background:var(--cream)}
+.tc-stars{font-size:13px;letter-spacing:3px;color:#C09050;margin-bottom:10px}
+.tc-q{font-size:13px;color:var(--stone);line-height:1.7;margin-bottom:16px;font-style:italic}
 .tc-au{display:flex;align-items:center;gap:10px}
-.tc-av{width:34px;height:34px;border:var(--bdr);border-radius:50%;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;flex-shrink:0}
-.tc-nm{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;color:var(--ink)}
-.tc-rl{font-family:'Space Mono',monospace;font-size:9px;color:var(--slate);letter-spacing:1px}
+.tc-avi{width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;flex-shrink:0}
+.tc-name{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--ink)}
+.tc-role{font-family:'Space Mono',monospace;font-size:9px;color:var(--stone)}
 
-/* FAQ */
-.faq-sec{background:#3a3731;color:#e8e4da;border-bottom:var(--bdr);padding:68px 24px}
-.faq-list{max-width:800px;margin:44px auto 0;border:1px solid #4a4740;border-radius:4px;overflow:hidden}
-.faq-item{border-bottom:1px solid #4a4740}
+/* ── APP DOWNLOAD ─────────────────────────────────────── */
+.app-sec{background:var(--deep);color:#E8E4DA;border-bottom:var(--bdr)}
+.app-inner{display:grid;grid-template-columns:1fr 1fr;max-width:1200px;margin:0 auto}
+.app-l{padding:64px 48px;border-right:1px solid #3A3730}
+.app-r{padding:64px 48px;display:flex;align-items:center;justify-content:center}
+.app-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#5A5750;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.app-eyebrow::before{content:'';width:16px;height:1px;background:#4A4740}
+.app-ttl{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,58px);line-height:.94;margin-bottom:18px;color:#E8E4DA}
+.app-ttl em{font-style:normal;-webkit-text-stroke:1px #7A7670;color:transparent}
+.app-desc{font-size:14px;color:#8A8680;line-height:1.7;margin-bottom:28px;max-width:400px}
+.store-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.store-btn{
+  display:flex;align-items:center;gap:11px;padding:12px 18px;
+  border:1px solid #5A5750;border-radius:var(--r-md);
+  cursor:pointer;transition:all .2s;color:#C8C4BA;background:#2E2C28;
+  min-width:150px;
+}
+.store-btn:hover{background:#3A3830;border-color:#8A8680;color:#E8E4DA}
+.store-ico{width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.store-sub{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:#6A6660}
+.store-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;line-height:1;color:#E8E4DA}
+/* phone */
+.phone{width:200px;background:#252320;border-radius:22px;padding:32px 0 16px;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.4);border:2px solid #4A4740}
+.phone::before{content:'';position:absolute;top:12px;left:50%;transform:translateX(-50%);width:50px;height:6px;border-radius:3px;background:#3A3730}
+.ph-hdr{padding:8px 12px 6px;display:flex;align-items:center;gap:6px;border-bottom:1px solid #2E2C28}
+.ph-logo-txt{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:3px;color:#E8E4DA}
+.ph-dot{width:5px;height:5px;border-radius:50%;background:#6DBF83;animation:pulse 2s infinite;margin-left:auto}
+.ph-body{padding:10px 12px}
+.ph-url{background:#2E2C28;border-radius:4px;padding:6px 8px;font-family:'Space Mono',monospace;font-size:7px;color:#5A5750;margin-bottom:8px}
+.ph-scores{display:flex;gap:3px;margin-bottom:7px}
+.ph-sc{flex:1;padding:6px 2px;text-align:center;border:1px solid #2E2C28;background:#2A2820;border-radius:4px}
+.ph-sc-n{font-family:'Bebas Neue',sans-serif;font-size:15px;color:#E8E4DA;display:block;line-height:1}
+.ph-sc-l{font-family:'Space Mono',monospace;font-size:6px;color:#5A5750}
+.ph-issues{display:flex;flex-direction:column;gap:3px}
+.ph-row{display:flex;gap:5px;padding:5px 7px;background:#2A2820;border-radius:3px;font-family:'Space Mono',monospace;font-size:7px;color:#6A6760;align-items:center}
+.ph-dot2{width:4px;height:4px;border-radius:50%;background:#5A5750;flex-shrink:0}
+
+/* ── FAQ ─────────────────────────────────────────────── */
+.faq-sec{background:var(--deep);color:#E8E4DA;border-bottom:var(--bdr);padding:72px 24px}
+.faq-inner{max-width:800px;margin:0 auto}
+.faq-hl-row{margin-bottom:40px}
+.faq-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#5A5750;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.faq-eyebrow::before{content:'';width:16px;height:1px;background:#4A4740}
+.faq-ttl{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,58px);line-height:.94;-webkit-text-stroke:1px #6A6660;color:transparent}
+.faq-list{display:flex;flex-direction:column;border:1px solid #3A3730;border-radius:var(--r-lg);overflow:hidden}
+.faq-item{border-bottom:1px solid #3A3730}
 .faq-item:last-child{border-bottom:none}
-.fq-q{width:100%;background:none;border:none;color:#e8e4da;text-align:left;padding:20px 22px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;transition:background .15s}
-.fq-q:hover{background:#45423e}
-.fq-qt{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;line-height:1.5;color:#d8d4ca}
-.fq-arr{font-size:18px;transition:transform .2s;flex-shrink:0;color:#6a6660}
-.faq-item.open .fq-arr{transform:rotate(45deg);color:#c8c0b0}
-.faq-item.open{background:#45423e}
-.fq-a{display:none;padding:0 22px 20px;font-size:13px;color:#9a9690;line-height:1.8}
-.faq-item.open .fq-a{display:block}
+.faq-q{width:100%;background:none;border:none;color:#E8E4DA;text-align:left;padding:18px 22px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;transition:background .15s}
+.faq-q:hover{background:#2E2C28}
+.faq-qt{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;line-height:1.5;color:#D8D4CA}
+.faq-arr{font-size:18px;flex-shrink:0;color:#5A5750;transition:transform .2s}
+.faq-item.open .faq-arr{transform:rotate(45deg);color:#C8C0B0}
+.faq-item.open{background:#2E2C28}
+.faq-a{display:none;padding:0 22px 18px;font-family:'DM Sans',sans-serif;font-size:13px;color:#7A7670;line-height:1.8}
+.faq-item.open .faq-a{display:block}
 
-/* FOOTER */
-footer{background:#2e2c28;color:#c8c4ba;border-top:var(--bdr)}
-.ft-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:0;border-bottom:1px solid #3a3731}
-.ft-col{padding:44px 28px;border-right:1px solid #3a3731}
+/* ── FOOTER ──────────────────────────────────────────── */
+footer{background:#252320;color:#C8C4BA;border-top:var(--bdr)}
+.ft-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;border-bottom:1px solid #2E2C28;max-width:1200px;margin:0 auto}
+.ft-col{padding:44px 28px;border-right:1px solid #2E2C28}
 .ft-col:last-child{border-right:none}
-.ft-lw{display:flex;align-items:center;gap:9px;margin-bottom:14px}
-.ft-lsq{width:38px;height:38px;border:1.5px solid #6a6660;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ft-ltt{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:#e8e4da}
-.ft-tag{font-size:13px;color:#7a7670;line-height:1.6;margin-bottom:18px}
-.ft-soc{display:flex;gap:7px}
-.soc{width:32px;height:32px;border:1px solid #4a4740;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s;color:#6a6660}
-.soc:hover{border-color:#9a9690;color:#c8c4ba}
-.ft-ct{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:3px;color:#6a6660;margin-bottom:14px}
+.ft-brand-row{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+.ft-logo-sq{width:36px;height:36px;border-radius:var(--r-sm);background:var(--paper);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ft-logo-sq svg{width:22px;height:22px}
+.ft-brand-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;color:#E8E4DA}
+.ft-tagline{font-size:13px;color:#5A5750;line-height:1.6;margin-bottom:18px;font-family:'DM Sans',sans-serif}
+.ft-soc{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.soc-btn{
+  display:flex;align-items:center;gap:6px;
+  border:1px solid #3A3730;border-radius:var(--r-sm);
+  padding:6px 12px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;
+  color:#6A6660;transition:all .15s;text-transform:uppercase;
+}
+.soc-btn:hover{border-color:#7A7670;color:#C8C4BA}
+.ft-ct{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:#4A4740;margin-bottom:14px;text-transform:uppercase}
 .ft-lks{display:flex;flex-direction:column;gap:9px}
-.ft-lks a{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;color:#6a6660;transition:color .15s}
-.ft-lks a:hover{color:#c8c4ba}
-.ft-bot{padding:18px 28px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #3a3731;flex-wrap:wrap;gap:10px}
-.ft-copy{font-family:'Space Mono',monospace;font-size:9px;color:#4a4740;letter-spacing:2px}
-.ft-leg{display:flex;gap:0;flex-wrap:wrap}
-.ft-leg a{font-family:'Space Mono',monospace;font-size:9px;color:#5a5750;letter-spacing:1px;padding:0 14px;border-left:1px solid #3a3731;transition:color .15s}
-.ft-leg a:first-child{border-left:none}
-.ft-leg a:hover{color:#9a9690}
+.ft-lks a{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.5px;color:#5A5750;transition:color .15s}
+.ft-lks a:hover{color:#C8C4BA}
+.ft-bot{
+  border-top:1px solid #2E2C28;padding:18px 28px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+  max-width:1200px;margin:0 auto;
+}
+.ft-copy{font-family:'Space Mono',monospace;font-size:9px;color:#3A3730;letter-spacing:1.5px;text-transform:uppercase}
+.ft-legal{display:flex;gap:0;flex-wrap:wrap}
+.ft-legal a{font-family:'Space Mono',monospace;font-size:9px;color:#3A3730;letter-spacing:.5px;padding:0 12px;border-left:1px solid #2E2C28;transition:color .15s}
+.ft-legal a:first-child{border-left:none;padding-left:0}
+.ft-legal a:hover{color:#7A7670}
 
-/* TOAST */
-#toast{position:fixed;bottom:22px;right:22px;z-index:9997;background:#3a3731;color:#e8e4da;border:1px solid #5a5750;border-radius:4px;padding:14px 22px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;transform:translateY(80px);opacity:0;transition:all .3s;max-width:290px;box-shadow:var(--shadow-md)}
+/* ── TOAST ───────────────────────────────────────────── */
+#toast{
+  position:fixed;bottom:22px;right:22px;z-index:9999;
+  background:var(--deep);color:#E8E4DA;
+  border:1px solid #4A4740;border-radius:var(--r-md);
+  padding:13px 20px;
+  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.5px;
+  box-shadow:var(--sh-lg);
+  transform:translateY(80px);opacity:0;transition:all .3s;max-width:280px;
+}
 #toast.show{transform:translateY(0);opacity:1}
 
-/* ANIMATIONS */
-.fu{opacity:0;transform:translateY(22px);animation:fadeup .6s ease forwards}
-@keyframes fadeup{to{opacity:1;transform:translateY(0)}}
-.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}
+/* ── SCROLL FADE ─────────────────────────────────────── */
+.fade{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease}
+.fade.in{opacity:1;transform:translateY(0)}
 
-/* ─── RESPONSIVE ────────────────────────── */
+/* ── RESPONSIVE ──────────────────────────────────────── */
 @media(max-width:1024px){
-  .feats{grid-template-columns:repeat(2,1fr)}
-  .hero{grid-template-columns:1fr}
-  .hero-l{border-right:none;border-bottom:var(--bdr);padding-right:0}
-  .hero-r{padding-left:0;padding-top:36px}
-  .res-grid{grid-template-columns:1fr}
-  .res-main{border-right:none;border-bottom:var(--bdr)}
-  .res-scores{grid-template-columns:repeat(3,1fr)}
-  .ai-in{grid-template-columns:1fr}
-  .ai-l{border-right:none;border-bottom:1px solid #4a4740}
-  .app-in{grid-template-columns:1fr}
-  .app-l{border-right:none;border-bottom:1px solid #4a4740}
-  .app-r{padding-top:40px;padding-bottom:60px}
+  .hero{grid-template-columns:1fr;gap:40px;padding:56px 24px 48px}
+  .ai-inner,.app-inner{grid-template-columns:1fr}
+  .ai-l,.app-l{border-right:none;border-bottom:1px solid #3A3730}
+  .ai-r,.app-r{padding-top:40px}
+  .whale-grid{grid-template-columns:1fr 1fr}
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .testi-grid{grid-template-columns:1fr 1fr}
   .ft-top{grid-template-columns:1fr 1fr}
   .price-grid{grid-template-columns:1fr}
-  .pc:first-child{border-right:none;border-bottom:1px solid #4a4740}
-  .steps{grid-template-columns:repeat(2,1fr)}
-  .testi-grid{grid-template-columns:1fr 1fr}
+  .pc:first-child{border-right:none;border-bottom:1px solid #4A4740}
+  .steps-row{grid-template-columns:repeat(2,1fr)}
+  .scores-row{grid-template-columns:repeat(3,1fr)}
+  .res-grid{grid-template-columns:1fr}
+  .res-main{border-right:none;border-bottom:var(--bdr)}
 }
 @media(max-width:768px){
   .hamburger{display:flex}
   .nav-links{display:none}
-  .hero{padding-top:36px}
-  h1{font-size:clamp(52px,14vw,80px)}
-  .feats{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr}
+  .whale-grid{grid-template-columns:1fr}
+  .feat-grid{grid-template-columns:1fr}
   .testi-grid{grid-template-columns:1fr}
-  .res-scores{grid-template-columns:repeat(2,1fr)}
+  .steps-row{grid-template-columns:1fr}
   .ft-top{grid-template-columns:1fr}
-  .ft-col{border-right:none;border-bottom:1px solid #3a3731}
+  .ft-col{border-right:none;border-bottom:1px solid #2E2C28}
   .ft-col:last-child{border-bottom:none}
   .ft-bot{flex-direction:column;align-items:flex-start}
-  .ft-leg{flex-wrap:wrap}
-  .ft-leg a{border-left:none;padding:0 0 4px 0}
-  .price-grid{max-width:100%}
-  .inp-pre{display:none}
-  .ai-r,.ai-l{padding:44px 22px}
-  .app-l,.app-r{padding:44px 22px}
-  .scan-sec{padding:44px 20px}
-  .feat-sec,.how-sec,.testi-sec{padding:44px 20px}
-  .price-sec,.faq-sec{padding:44px 20px}
-  .btn-scan{padding:0 18px;font-size:16px}
-  nav{padding:0 14px}
-  .pc{padding:28px 22px}
-  .ai-chat{height:340px}
-  .hstats{grid-template-columns:1fr 1fr 1fr}
+  .ft-legal a{border-left:none;padding:0}
+  .scores-row{grid-template-columns:repeat(2,1fr)}
+  .scan-tabs{flex-wrap:wrap}
+  .ai-l,.ai-r{padding:44px 24px}
+  .app-l,.app-r{padding:44px 24px}
+  .whale-sec,.feat-sec,.how-sec,.testi-sec{padding:56px 20px}
+  .price-sec,.faq-sec{padding:56px 20px}
+  .scan-sec{padding:56px 20px}
+  nav{padding:0 16px}
+  .hero{padding:48px 20px 40px}
 }
 @media(max-width:480px){
-  .hero-btns{flex-direction:column}
-  .btn-p,.btn-g{width:100%;justify-content:center}
-  .store-btns{flex-direction:column}
-  .stbtn{min-width:unset;width:100%}
-  .scan-opts{display:none}
-  .res-scores{grid-template-columns:1fr 1fr}
-  .hstats{grid-template-columns:1fr 1fr}
+  .btn-row{flex-direction:column}
+  .btn-primary,.btn-ghost{width:100%;justify-content:center}
+  .store-row{flex-direction:column}
+  .store-btn{width:100%}
+  .scan-modules{display:none}
+  .scores-row{grid-template-columns:1fr 1fr}
+  .hero-stats{grid-template-columns:repeat(3,1fr)}
+  .price-grid{max-width:100%}
 }
 </style>
 </head>
@@ -440,152 +714,198 @@ footer{background:#2e2c28;color:#c8c4ba;border-top:var(--bdr)}
 
 <!-- TICKER -->
 <div class="ticker" aria-hidden="true">
-  <div class="ticker-track">
-    <span>SEO AUDIT</span><span class="sep">///</span><span>PERFORMANCE</span><span class="sep">///</span>
-    <span>SECURITY SCAN</span><span class="sep">///</span><span>AI RECOMMENDATIONS</span><span class="sep">///</span>
-    <span>CORE WEB VITALS</span><span class="sep">///</span><span>ACCESSIBILITY</span><span class="sep">///</span>
-    <span>MOBILE UX</span><span class="sep">///</span><span>BACKLINK AUDIT</span><span class="sep">///</span>
-    <span>SEO AUDIT</span><span class="sep">///</span><span>PERFORMANCE</span><span class="sep">///</span>
-    <span>SECURITY SCAN</span><span class="sep">///</span><span>AI RECOMMENDATIONS</span><span class="sep">///</span>
-    <span>CORE WEB VITALS</span><span class="sep">///</span><span>ACCESSIBILITY</span><span class="sep">///</span>
-    <span>MOBILE UX</span><span class="sep">///</span><span>BACKLINK AUDIT</span><span class="sep">///</span>
+  <div class="ticker-inner">
+    <span class="hi">🐋 WHALE DETECTED</span><span>SOL WALLET SCAN</span><span>SEO AUDIT</span>
+    <span class="hi">🚀 MEME COIN TRACKER</span><span>PERFORMANCE</span><span>SECURITY SCAN</span>
+    <span>AI RECOMMENDATIONS</span><span class="hi">CORE WEB VITALS</span><span>ORBOT ACTIVE</span>
+    <span class="hi">🐋 WHALE DETECTED</span><span>SOL WALLET SCAN</span><span>SEO AUDIT</span>
+    <span class="hi">🚀 MEME COIN TRACKER</span><span>PERFORMANCE</span><span>SECURITY SCAN</span>
+    <span>AI RECOMMENDATIONS</span><span class="hi">CORE WEB VITALS</span><span>ORBOT ACTIVE</span>
   </div>
 </div>
 
 <!-- NAV -->
 <nav role="navigation" aria-label="Main navigation">
-  <div class="nav-logo">
-    <div class="logo-box" aria-hidden="true">
-      <svg viewBox="0 0 26 26" fill="none" width="26" height="26">
-        <circle cx="13" cy="13" r="10" stroke="#f3f2ed" stroke-width="1.8"/>
-        <circle cx="13" cy="13" r="4.5" fill="#f3f2ed"/>
-        <line x1="13" y1="0" x2="13" y2="3" stroke="#f3f2ed" stroke-width="2"/>
-        <line x1="13" y1="23" x2="13" y2="26" stroke="#f3f2ed" stroke-width="2"/>
-        <line x1="0" y1="13" x2="3" y2="13" stroke="#f3f2ed" stroke-width="2"/>
-        <line x1="23" y1="13" x2="26" y2="13" stroke="#f3f2ed" stroke-width="2"/>
+  <div class="nav-brand">
+    <div class="nav-logo-mark" aria-hidden="true">
+      <svg viewBox="0 0 22 22" fill="none">
+        <circle cx="11" cy="11" r="8.5" stroke="#FAFAF8" stroke-width="1.5"/>
+        <circle cx="11" cy="11" r="3.5" fill="#FAFAF8"/>
+        <line x1="11" y1="0" x2="11" y2="2.5" stroke="#FAFAF8" stroke-width="1.5"/>
+        <line x1="11" y1="19.5" x2="11" y2="22" stroke="#FAFAF8" stroke-width="1.5"/>
+        <line x1="0" y1="11" x2="2.5" y2="11" stroke="#FAFAF8" stroke-width="1.5"/>
+        <line x1="19.5" y1="11" x2="22" y2="11" stroke="#FAFAF8" stroke-width="1.5"/>
       </svg>
     </div>
     <div>
-      <div class="logo-txt">ORSCAN</div>
-      <span class="logo-sub">WEBSITE INTELLIGENCE</span>
+      <div class="nav-name">ORSCAN</div>
+      <span class="nav-tag">Web & Crypto Intel</span>
     </div>
   </div>
-  <button class="hamburger" id="hambBtn" aria-label="Toggle menu" aria-expanded="false">
+  <button class="hamburger" id="hambBtn" aria-label="Open menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
   <div class="nav-links" id="navLinks">
     <a href="#feat-sec">Features</a>
-    <a href="#how-sec">How It Works</a>
+    <a href="#whale-sec">Whale Scanner</a>
     <a href="#price-sec">Pricing</a>
     <a href="#ai-sec">AI Agent</a>
-    <a href="#scan-sec" class="nav-cta">Scan Now →</a>
+    <a href="https://x.com/Orscanagent" target="_blank" rel="noopener" aria-label="Follow on X">𝕏</a>
+    <a href="https://github.com/orscan?tab=repositories" target="_blank" rel="noopener" aria-label="GitHub">⌥</a>
+    <a href="#scan-sec" class="nav-cta">Try Free →</a>
   </div>
 </nav>
 
 <!-- MOBILE MENU -->
-<div id="mob-menu" role="dialog" aria-label="Mobile navigation">
+<div id="mob-menu" role="dialog" aria-label="Navigation">
   <a href="#feat-sec" onclick="closeMob()">Features</a>
+  <a href="#whale-sec" onclick="closeMob()">🐋 Whale Scanner</a>
   <a href="#how-sec" onclick="closeMob()">How It Works</a>
   <a href="#price-sec" onclick="closeMob()">Pricing</a>
   <a href="#ai-sec" onclick="closeMob()">AI Agent</a>
-  <a href="#app-sec" onclick="closeMob()">Mobile App</a>
-  <a href="#scan-sec" onclick="closeMob()">Scan Now →</a>
+  <a href="https://x.com/Orscanagent" target="_blank" rel="noopener" onclick="closeMob()">Follow on 𝕏</a>
+  <a href="https://github.com/orscan?tab=repositories" target="_blank" rel="noopener" onclick="closeMob()">GitHub ⌥</a>
+  <a href="#scan-sec" onclick="closeMob()">Try Free →</a>
 </div>
 
 <!-- HERO -->
-<section class="hero" aria-label="Hero section">
-  <div class="hero-l fu">
-    <div class="eyebrow">Website Intelligence Platform</div>
-    <h1>
-      <span>SCAN.</span>
-      <span class="out">ANALYZE.</span>
-      <span>DOMINATE.</span>
-    </h1>
-    <p class="hero-desc">ORSCAN is a brutally honest AI-powered website scanner. Get deep SEO audits, performance insights, security checks, critical feedback, and actionable recommendations—in seconds.</p>
-    <div class="hero-btns">
-      <a href="#scan-sec" class="btn-p">
-        Start Free Scan
-        <svg viewBox="0 0 17 17" fill="none"><path d="M2 8.5h13M8.5 2l6.5 6.5-6.5 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg>
-      </a>
-      <a href="#price-sec" class="btn-g">View Pricing</a>
+<section class="hero" aria-label="Hero">
+  <div>
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      Website & Crypto Intelligence
     </div>
-    <div class="hero-tags">
-      <span class="tag tag-dk">No Login Required</span>
-      <span class="tag">Free Tier Available</span>
-      <span class="tag">AI-Powered</span>
-      <span class="tag">Real-Time Results</span>
+    <h1>SCAN.<br><em>ANALYZE.</em><br>DOMINATE.</h1>
+    <p class="hero-desc">
+      <strong>ORSCAN</strong> is your all-in-one intelligence layer — scan any website for SEO & performance issues, then track whale wallets and meme coin movements on Solana. All in one place, all in seconds.
+    </p>
+    <div class="btn-row">
+      <a href="#scan-sec" class="btn-primary">
+        Start Free Scan
+        <svg viewBox="0 0 16 16" fill="none"><path d="M2 8h12M8 2l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg>
+      </a>
+      <a href="#whale-sec" class="btn-ghost">🐋 Whale Scanner</a>
+    </div>
+    <div class="hero-pills">
+      <span class="pill pill-dark">No Login Required</span>
+      <span class="pill pill-green">🆕 Whale Scanner</span>
+      <span class="pill">AI-Powered</span>
+      <span class="pill">Free Tier</span>
+      <span class="pill">Real-Time</span>
+    </div>
+
+    <!-- ORYNTH BADGE -->
+    <div class="orynth-wrap" style="margin-top:28px">
+      <a href="https://orynth.dev/projects/orscan" target="_blank" rel="noopener">
+        <img src="https://orynth.dev/api/badge/orscan?theme=light&style=default" alt="Featured on Orynth" width="260" height="80" style="border-radius:8px;display:block" onerror="this.style.display='none'"/>
+      </a>
     </div>
   </div>
-  <div class="hero-r fu d2">
-    <div>
-      <div class="hero-visual" aria-hidden="true">
-        <div class="scan-lbl">// SCANNING: yourwebsite.com</div>
-        <div class="scan-lines">
-          <div class="sln" style="width:100%"></div>
-          <div class="sln" style="width:75%"></div>
-          <div class="sln" style="width:100%"></div>
-          <div class="sln" style="width:55%"></div>
-          <div class="sln" style="width:38%"></div>
-        </div>
-        <div class="score-row">
-          <div class="sc-item"><span class="sc-n">94</span><span class="sc-l">SEO</span></div>
-          <div class="sc-item"><span class="sc-n">88</span><span class="sc-l">PERF</span></div>
-          <div class="sc-item"><span class="sc-n">71</span><span class="sc-l">A11Y</span></div>
-          <div class="sc-item"><span class="sc-n">96</span><span class="sc-l">SEC</span></div>
-          <div class="sc-item"><span class="sc-n">59</span><span class="sc-l">UX</span></div>
-        </div>
+
+  <div class="hero-r">
+    <div class="hero-card">
+      <div class="hc-label">// Scanning: yourwebsite.com</div>
+      <div class="scan-bars">
+        <div class="sbar s90"></div>
+        <div class="sbar s75"></div>
+        <div class="sbar s90"></div>
+        <div class="sbar s60"></div>
+        <div class="sbar s45"></div>
+      </div>
+      <div class="score-grid">
+        <div class="sg"><span class="sg-n">94</span><span class="sg-l">SEO</span></div>
+        <div class="sg"><span class="sg-n">88</span><span class="sg-l">PERF</span></div>
+        <div class="sg"><span class="sg-n">71</span><span class="sg-l">A11Y</span></div>
+        <div class="sg"><span class="sg-n">96</span><span class="sg-l">SEC</span></div>
+        <div class="sg"><span class="sg-n">59</span><span class="sg-l">UX</span></div>
       </div>
     </div>
-    <div class="hstats">
-      <div class="hs"><span class="hs-n">50K+</span><span class="hs-l">Sites Scanned</span></div>
-      <div class="hs"><span class="hs-n">2.3s</span><span class="hs-l">Avg Scan Time</span></div>
-      <div class="hs" style="border-right:none"><span class="hs-n">98%</span><span class="hs-l">Accuracy Rate</span></div>
+    <div class="hero-stats">
+      <div class="hs-card"><span class="hs-n">50K+</span><span class="hs-l">Sites Scanned</span></div>
+      <div class="hs-card"><span class="hs-n">2.3s</span><span class="hs-l">Avg Scan Time</span></div>
+      <div class="hs-card"><span class="hs-n">98%</span><span class="hs-l">Accuracy Rate</span></div>
     </div>
   </div>
 </section>
 
 <!-- MARQUEE -->
-<div class="mq" aria-hidden="true">
-  <div class="mq-track">
-    <span>SEO</span><span>PERFORMANCE</span><span>SECURITY</span><span>CORE WEB VITALS</span>
-    <span>BACKLINKS</span><span>MOBILE UX</span><span class="sep">///</span><span>AI AGENT</span>
-    <span>ACCESSIBILITY</span><span>RECOMMENDATIONS</span><span>CRITIQUES</span><span>SCHEMA</span>
-    <span>SEO</span><span>PERFORMANCE</span><span>SECURITY</span><span>CORE WEB VITALS</span>
-    <span>BACKLINKS</span><span>MOBILE UX</span><span class="sep">///</span><span>AI AGENT</span>
-    <span>ACCESSIBILITY</span><span>RECOMMENDATIONS</span><span>CRITIQUES</span><span>SCHEMA</span>
+<div class="mq-strip" aria-hidden="true">
+  <div class="mq-inner">
+    <span class="hi">WHALE SCANNER</span><span>SEO</span><span class="hi">MEME COINS</span><span>PERFORMANCE</span>
+    <span>SECURITY</span><span class="hi">SOLANA WALLETS</span><span>CORE WEB VITALS</span><span>AI AGENT</span>
+    <span>BACKLINKS</span><span class="hi">WHALE ALERTS</span><span>MOBILE UX</span><span>SCHEMA</span>
+    <span class="hi">WHALE SCANNER</span><span>SEO</span><span class="hi">MEME COINS</span><span>PERFORMANCE</span>
+    <span>SECURITY</span><span class="hi">SOLANA WALLETS</span><span>CORE WEB VITALS</span><span>AI AGENT</span>
+    <span>BACKLINKS</span><span class="hi">WHALE ALERTS</span><span>MOBILE UX</span><span>SCHEMA</span>
   </div>
 </div>
 
 <!-- SCAN SECTION -->
-<section class="scan-sec" id="scan-sec" aria-label="Website scanner">
-  <div class="scan-bg" aria-hidden="true">SCAN</div>
-  <div class="scan-in">
-    <div class="scan-kicker">// INITIATE SCAN</div>
-    <h2 class="scan-hl">ENTER YOUR <em>WEBSITE</em><br>GET BRUTALLY HONEST RESULTS</h2>
-    <div class="input-wrap" role="search">
-      <div class="inp-pre" aria-hidden="true">TARGET URL</div>
-      <input type="url" id="url-in" placeholder="https://yourwebsite.com" aria-label="Website URL to scan" autocomplete="off" spellcheck="false">
-      <button class="btn-scan" id="scanBtn" aria-label="Start scan">SCAN IT</button>
+<section class="scan-sec" id="scan-sec" aria-label="Scanner">
+  <div class="scan-ghost" aria-hidden="true">SCAN</div>
+  <div class="scan-inner">
+    <div class="scan-eyebrow">// Initiate Scan</div>
+    <h2 class="scan-hl">ENTER YOUR <em>TARGET</em><br>GET INSTANT RESULTS</h2>
+
+    <!-- TAB SWITCHER -->
+    <div class="scan-tabs" role="tablist">
+      <button class="stab active" id="tab-web" role="tab" aria-selected="true" onclick="switchTab('web')">
+        🌐 Website Scan
+      </button>
+      <button class="stab" id="tab-wallet" role="tab" aria-selected="false" onclick="switchTab('wallet')">
+        🐋 Wallet Scanner
+      </button>
     </div>
-    <div class="scan-opts" role="group" aria-label="Scan modules">
-      <label class="sopt chk" id="o1"><input type="checkbox" checked><div class="dot"></div>SEO Audit</label>
-      <label class="sopt chk" id="o2"><input type="checkbox" checked><div class="dot"></div>Performance</label>
-      <label class="sopt chk" id="o3"><input type="checkbox" checked><div class="dot"></div>Security</label>
-      <label class="sopt" id="o4"><input type="checkbox"><div class="dot"></div>Accessibility</label>
-      <label class="sopt" id="o5"><input type="checkbox"><div class="dot"></div>Mobile UX</label>
-      <label class="sopt" id="o6"><input type="checkbox"><div class="dot"></div>AI Critique</label>
+
+    <!-- WEBSITE PANEL -->
+    <div class="scan-panel active" id="panel-web" role="tabpanel">
+      <div class="url-row">
+        <div class="url-pre" aria-hidden="true">URL</div>
+        <input type="url" id="url-in" placeholder="https://yourwebsite.com" aria-label="Website URL to scan" autocomplete="off" spellcheck="false">
+        <button class="btn-scan" id="scanBtn">SCAN IT</button>
+      </div>
+      <div class="scan-modules" role="group" aria-label="Scan modules">
+        <label class="smod on" id="o1"><input type="checkbox" checked><div class="check"></div>SEO</label>
+        <label class="smod on" id="o2"><input type="checkbox" checked><div class="check"></div>Performance</label>
+        <label class="smod on" id="o3"><input type="checkbox" checked><div class="check"></div>Security</label>
+        <label class="smod" id="o4"><input type="checkbox"><div class="check"></div>Accessibility</label>
+        <label class="smod" id="o5"><input type="checkbox"><div class="check"></div>Mobile UX</label>
+        <label class="smod" id="o6"><input type="checkbox"><div class="check"></div>AI Critique</label>
+      </div>
+      <div class="scan-note">Free: <b>3 scans/day · 5 modules</b> &nbsp;·&nbsp; Pro: <b>Unlimited · All modules · AI Agent</b></div>
     </div>
-    <div class="scan-note">Free: <b>3 scans/day · 5 modules</b> &nbsp;|&nbsp; Pro: <b>Unlimited · All modules · AI Agent</b></div>
+
+    <!-- WALLET PANEL -->
+    <div class="scan-panel" id="panel-wallet" role="tabpanel">
+      <div class="chain-row" role="group" aria-label="Select blockchain">
+        <div class="chain-opt active" onclick="selectChain(this)">◎ Solana</div>
+        <div class="chain-opt" onclick="selectChain(this)">Ξ Ethereum</div>
+        <div class="chain-opt" onclick="selectChain(this)">₿ Bitcoin</div>
+        <div class="chain-opt" onclick="selectChain(this)">🟣 Polygon</div>
+        <div class="chain-opt" onclick="selectChain(this)">🔵 Base</div>
+      </div>
+      <div class="wallet-row">
+        <div class="wallet-pre" aria-hidden="true">WALLET</div>
+        <input type="text" id="wallet-in" placeholder="Enter wallet address or .sol domain..." aria-label="Wallet address to scan" autocomplete="off" spellcheck="false">
+        <button class="btn-wallet" id="walletBtn">SCAN WALLET</button>
+      </div>
+      <div class="scan-note">Detect whale movements · meme coin holdings · PnL · token distribution · 30-day activity</div>
+    </div>
+
+    <!-- PROGRESS BAR -->
     <div id="prog">
-      <div class="prog-lbl"><span id="prog-st">INITIALIZING...</span><span id="prog-pc">0%</span></div>
-      <div class="prog-bar"><div class="prog-fill" id="pf"></div></div>
+      <div class="prog-top">
+        <span id="prog-lbl">INITIALIZING...</span>
+        <span id="prog-pct">0%</span>
+      </div>
+      <div class="prog-track"><div class="prog-bar" id="progBar"></div></div>
       <div class="prog-steps">
-        <div class="ps" id="ps1"><span class="pi">🔍</span>DNS</div>
-        <div class="ps" id="ps2"><span class="pi">📄</span>HTML</div>
-        <div class="ps" id="ps3"><span class="pi">📈</span>SEO</div>
-        <div class="ps" id="ps4"><span class="pi">⚡</span>Perf</div>
-        <div class="ps" id="ps5"><span class="pi">🔒</span>Sec</div>
-        <div class="ps" id="ps6"><span class="pi">🤖</span>AI</div>
+        <div class="ps" id="ps1"><span class="ps-ic">🔍</span>DNS</div>
+        <div class="ps" id="ps2"><span class="ps-ic">📄</span>HTML</div>
+        <div class="ps" id="ps3"><span class="ps-ic">📈</span>SEO</div>
+        <div class="ps" id="ps4"><span class="ps-ic">⚡</span>Perf</div>
+        <div class="ps" id="ps5"><span class="ps-ic">🔒</span>Sec</div>
+        <div class="ps" id="ps6"><span class="ps-ic">🤖</span>AI</div>
       </div>
     </div>
   </div>
@@ -593,21 +913,21 @@ footer{background:#2e2c28;color:#c8c4ba;border-top:var(--bdr)}
 
 <!-- RESULTS -->
 <div id="res-sec" aria-live="polite" aria-label="Scan results">
-  <div class="res-hd">
-    <div class="res-si">
-      <div class="res-fav" id="resFav">W</div>
+  <div class="res-bar">
+    <div class="res-site">
+      <div class="res-avi" id="resFav">W</div>
       <div>
         <div class="res-url" id="resUrl">https://example.com</div>
-        <div class="res-title" id="resTtl">EXAMPLE WEBSITE</div>
+        <div class="res-domain" id="resDomain">EXAMPLE WEBSITE</div>
       </div>
     </div>
-    <div class="res-meta">
-      <div class="res-bdg">Scanned just now</div>
-      <div class="res-bdg">FREE PLAN</div>
-      <button class="res-bdg fill" onclick="showToast('⚠ PDF Export requires Pro plan')">Export PDF</button>
+    <div class="res-actions">
+      <div class="res-btn">Scanned just now</div>
+      <div class="res-btn">Free Plan</div>
+      <button class="res-btn dark" onclick="showToast('⚠ PDF Export — Pro plan required')">Export PDF</button>
     </div>
   </div>
-  <div class="res-scores">
+  <div class="scores-row">
     <div class="rsc hi"><div class="rsc-circ"><span class="rsc-n" id="sc-seo">86</span></div><div class="rsc-l">SEO</div></div>
     <div class="rsc md"><div class="rsc-circ"><span class="rsc-n" id="sc-perf">72</span></div><div class="rsc-l">Performance</div></div>
     <div class="rsc hi"><div class="rsc-circ"><span class="rsc-n" id="sc-sec">91</span></div><div class="rsc-l">Security</div></div>
@@ -616,218 +936,270 @@ footer{background:#2e2c28;color:#c8c4ba;border-top:var(--bdr)}
   </div>
   <div class="res-grid">
     <div class="res-main" id="resMain"></div>
-    <div id="resSide"></div>
+    <div class="res-side" id="resSide"></div>
   </div>
 </div>
 
+<!-- WHALE SCANNER SECTION -->
+<section class="whale-sec" id="whale-sec" aria-label="Whale Wallet Scanner">
+  <div class="whale-inner">
+    <div class="whale-hdr">
+      <div>
+        <div class="whale-new-badge"><span class="ndot"></span>New Feature</div>
+        <div class="whale-kicker">Priority Feature · Solana Intelligence</div>
+        <h2 class="whale-hl">WHALE &<br><em>MEME</em> SCANNER</h2>
+      </div>
+      <p class="whale-desc">Track the biggest wallets on Solana in real time. Spot meme coin accumulation before it trends. Know what whales are buying before the crowd does.</p>
+    </div>
+
+    <div class="whale-grid">
+      <div class="wcard">
+        <div class="wcard-ico green">🐋</div>
+        <div class="wcard-ttl">Whale Wallet Tracker</div>
+        <p class="wcard-desc">Paste any Solana wallet address and instantly see holdings, recent trades, PnL, token distribution, and 30-day activity history.</p>
+        <span class="wcard-tag new">Live · Free</span>
+      </div>
+      <div class="wcard">
+        <div class="wcard-ico amber">🚀</div>
+        <div class="wcard-ttl">Meme Coin Detector</div>
+        <p class="wcard-desc">Detect early whale accumulation in meme coins before they pump. Get alerts when large wallets quietly enter low-cap tokens.</p>
+        <span class="wcard-tag hot">Hot Feature</span>
+      </div>
+      <div class="wcard">
+        <div class="wcard-ico blue">📊</div>
+        <div class="wcard-ttl">Portfolio Intelligence</div>
+        <p class="wcard-desc">Full breakdown of any wallet's token portfolio — realized PnL, unrealized gains, top holdings, entry prices, and exit patterns.</p>
+        <span class="wcard-tag new">Premium</span>
+      </div>
+      <div class="wcard">
+        <div class="wcard-ico purple">🔔</div>
+        <div class="wcard-ttl">Whale Alert System</div>
+        <p class="wcard-desc">Set custom alerts for specific wallets. Get notified instantly when a tracked whale buys, sells, or transfers tokens above your threshold.</p>
+        <span class="wcard-tag">Premium</span>
+      </div>
+      <div class="wcard">
+        <div class="wcard-ico teal">🔗</div>
+        <div class="wcard-ttl">Wallet Clustering</div>
+        <p class="wcard-desc">Identify connected wallets and coordinated trading groups. See if multiple wallets are controlled by the same entity via on-chain patterns.</p>
+        <span class="wcard-tag">Premium</span>
+      </div>
+      <div class="wcard">
+        <div class="wcard-ico red">🤖</div>
+        <div class="wcard-ttl">ORBOT Wallet Analysis</div>
+        <p class="wcard-desc">Ask ORBOT in plain English: "Is this wallet a bot?" or "What's this whale's trading pattern?" Get instant AI-powered on-chain analysis.</p>
+        <span class="wcard-tag new">AI · Premium</span>
+      </div>
+    </div>
+
+    <!-- LIVE FEED MOCKUP -->
+    <div class="whale-feed">
+      <div class="wf-header">
+        <div class="wf-title">LIVE WHALE FEED — SOLANA</div>
+        <div class="wf-live"><span class="live-dot"></span>Real-time</div>
+      </div>
+      <div class="wf-list" id="whaleFeed">
+        <div class="wf-row"><div class="wf-type">🐋</div><div class="wf-info"><div class="wf-wallet">7xKp...3mNR</div><div class="wf-token">BONK · Solana</div></div><div class="wf-amount buy">+$284,000</div><div class="wf-time">2s ago</div></div>
+        <div class="wf-row"><div class="wf-type">🚀</div><div class="wf-info"><div class="wf-wallet">9fQz...8vWL</div><div class="wf-token">WIF · Solana</div></div><div class="wf-amount buy">+$95,400</div><div class="wf-time">8s ago</div></div>
+        <div class="wf-row"><div class="wf-type">🔴</div><div class="wf-info"><div class="wf-wallet">3pRn...6kYT</div><div class="wf-token">POPCAT · Solana</div></div><div class="wf-amount sell">-$142,800</div><div class="wf-time">15s ago</div></div>
+        <div class="wf-row"><div class="wf-type">🐋</div><div class="wf-info"><div class="wf-wallet">BcXm...2hDA</div><div class="wf-token">MEW · Solana</div></div><div class="wf-amount buy">+$67,200</div><div class="wf-time">23s ago</div></div>
+        <div class="wf-row"><div class="wf-type">🚀</div><div class="wf-info"><div class="wf-wallet">Ks4J...9pZQ</div><div class="wf-token">BOME · Solana</div></div><div class="wf-amount buy">+$38,900</div><div class="wf-time">31s ago</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FEATURES -->
 <section class="feat-sec" id="feat-sec" aria-label="Features">
-  <div class="sec-hdr">
-    <div>
-      <div class="sec-kk">What We Scan</div>
-      <h2 class="sec-ttl">EVERY<br><span class="out">ANGLE</span><br>COVERED</h2>
+  <div class="feat-inner">
+    <div class="sec-hdr">
+      <div>
+        <div class="sec-kicker">Full Feature Set</div>
+        <h2 class="sec-ttl">EVERY<br><em>ANGLE</em><br>COVERED</h2>
+      </div>
+      <p style="max-width:280px;color:var(--stone);font-size:14px;line-height:1.7">ORSCAN combines website intelligence and on-chain crypto analytics into one powerful scanner.</p>
     </div>
-    <p style="max-width:300px;color:#666;font-size:14px;line-height:1.7">ORSCAN's multi-module engine dissects your website from 12 critical perspectives. Nothing escapes the scan.</p>
-  </div>
-  <div class="feats">
-    <div class="fc"><div class="fc-ico">📈</div><div class="fc-ttl">SEO Deep Audit</div><p class="fc-desc">Meta tags, title optimization, keyword density, canonical issues, structured data, XML sitemaps, robots.txt.</p><span class="fc-tag">Free</span></div>
-    <div class="fc"><div class="fc-ico">⚡</div><div class="fc-ttl">Core Web Vitals</div><p class="fc-desc">LCP, FID, CLS, TTFB measurement. PageSpeed scoring, image compression, render-blocking resource detection.</p><span class="fc-tag">Free</span></div>
-    <div class="fc"><div class="fc-ico">🔒</div><div class="fc-ttl">Security Scan</div><p class="fc-desc">SSL certificate, HTTPS config, security headers, XSS vulnerabilities, outdated dependency detection.</p><span class="fc-tag">Free</span></div>
-    <div class="fc"><div class="fc-ico">📱</div><div class="fc-ttl">Mobile Optimization</div><p class="fc-desc">Responsive design check, touch targets, font sizes, viewport configuration, mobile-first indexing readiness.</p><span class="fc-tag">Free</span></div>
-    <div class="fc"><div class="fc-ico">♿</div><div class="fc-ttl">Accessibility (WCAG)</div><p class="fc-desc">WCAG 2.2 compliance, color contrast ratios, ARIA labels, keyboard navigation, screen reader compatibility.</p><span class="fc-tag pm">Premium</span></div>
-    <div class="fc"><div class="fc-ico">🔗</div><div class="fc-ttl">Backlink & Link Audit</div><p class="fc-desc">Broken links, internal link structure, external link authority, redirect chain mapping and analysis.</p><span class="fc-tag pm">Premium</span></div>
-    <div class="fc"><div class="fc-ico">🎯</div><div class="fc-ttl">Competitor Analysis</div><p class="fc-desc">Stack your site against top 3 competitors. Keyword gap analysis, content comparison, DA/PA benchmarking.</p><span class="fc-tag pm">Premium</span></div>
-    <div class="fc"><div class="fc-ico">🤖</div><div class="fc-ttl">AI Critique & Copy</div><p class="fc-desc">Brutally honest AI critique of content quality, copy tone, UX writing, and conversion optimization suggestions.</p><span class="fc-tag pm">Premium</span></div>
-    <div class="fc"><div class="fc-ico">📊</div><div class="fc-ttl">Schema & Rich Results</div><p class="fc-desc">JSON-LD validation, Open Graph, Twitter Cards, structured data for Articles, Products, FAQs, and Reviews.</p><span class="fc-tag">Free</span></div>
+    <div class="feat-grid">
+      <div class="fc"><div class="fc-ico">🐋</div><div class="fc-ttl">Whale Wallet Scanner</div><p class="fc-desc">Track any Solana wallet. See holdings, PnL, trade history, and meme coin accumulation in real time.</p><span class="fc-tag new">New · Free</span></div>
+      <div class="fc"><div class="fc-ico">🚀</div><div class="fc-ttl">Meme Coin Intelligence</div><p class="fc-desc">Early detection of whale accumulation in low-cap meme coins before price movements. Smart alerts.</p><span class="fc-tag new">New · Hot</span></div>
+      <div class="fc"><div class="fc-ico">📈</div><div class="fc-ttl">SEO Deep Audit</div><p class="fc-desc">Meta tags, title optimization, keyword density, canonical issues, structured data, sitemaps, robots.txt.</p><span class="fc-tag">Free</span></div>
+      <div class="fc"><div class="fc-ico">⚡</div><div class="fc-ttl">Core Web Vitals</div><p class="fc-desc">LCP, FID, CLS, TTFB measurement. PageSpeed scoring and render-blocking resource detection.</p><span class="fc-tag">Free</span></div>
+      <div class="fc"><div class="fc-ico">🔒</div><div class="fc-ttl">Security Scan</div><p class="fc-desc">SSL certificate, HTTPS config, security headers, XSS vulnerabilities, outdated dependency detection.</p><span class="fc-tag">Free</span></div>
+      <div class="fc"><div class="fc-ico">📱</div><div class="fc-ttl">Mobile Optimization</div><p class="fc-desc">Responsive design, touch targets, font sizes, viewport config, and mobile-first indexing readiness.</p><span class="fc-tag">Free</span></div>
+      <div class="fc"><div class="fc-ico">♿</div><div class="fc-ttl">Accessibility WCAG</div><p class="fc-desc">WCAG 2.2 compliance, color contrast, ARIA labels, keyboard navigation, screen reader compatibility.</p><span class="fc-tag pm">Premium</span></div>
+      <div class="fc"><div class="fc-ico">🎯</div><div class="fc-ttl">Competitor Analysis</div><p class="fc-desc">Stack your site vs top 3 competitors. Keyword gap analysis, content comparison, DA/PA benchmarking.</p><span class="fc-tag pm">Premium</span></div>
+      <div class="fc"><div class="fc-ico">🤖</div><div class="fc-ttl">AI Critique & Copy</div><p class="fc-desc">Brutally honest AI analysis of content quality, UX writing, and conversion optimization suggestions.</p><span class="fc-tag pm">Premium</span></div>
+    </div>
   </div>
 </section>
 
 <!-- HOW IT WORKS -->
 <section class="how-sec" id="how-sec" aria-label="How it works">
-  <div class="sec-hdr">
-    <div>
-      <div class="sec-kk">The Process</div>
-      <h2 class="sec-ttl">HOW<br><span class="out">ORSCAN</span><br>WORKS</h2>
+  <div class="how-inner">
+    <div class="sec-hdr">
+      <div>
+        <div class="sec-kicker">The Process</div>
+        <h2 class="sec-ttl">HOW<br><em>ORSCAN</em><br>WORKS</h2>
+      </div>
     </div>
-  </div>
-  <div class="steps">
-    <div class="step"><div class="step-n" aria-hidden="true">01</div><div class="step-ico">🎯</div><div class="step-ttl">Enter Your URL</div><p class="step-d">Paste any website URL. No account required for free scans. Works on any publicly accessible site, worldwide.</p></div>
-    <div class="step"><div class="step-n" aria-hidden="true">02</div><div class="step-ico">🔍</div><div class="step-ttl">Deep Scan Runs</div><p class="step-d">Our engine crawls your site across 50+ checkpoints—SEO, performance, security, UX, accessibility, and more.</p></div>
-    <div class="step"><div class="step-n" aria-hidden="true">03</div><div class="step-ico">🤖</div><div class="step-ttl">AI Analyzes Results</div><p class="step-d">ORBOT processes raw data and generates prioritized, actionable recommendations specific to your website.</p></div>
-    <div class="step" style="border-right:none"><div class="step-n" aria-hidden="true">04</div><div class="step-ico">📋</div><div class="step-ttl">Get Your Report</div><p class="step-d">Download a full PDF report or chat with ORBOT live to ask follow-up questions and dive deeper into fixes.</p></div>
+    <div class="steps-row">
+      <div class="step"><div class="step-num" aria-hidden="true">01</div><div class="step-ico">🎯</div><div class="step-ttl">Enter Your Target</div><p class="step-d">Paste a website URL or a Solana wallet address. No account needed for free scans.</p></div>
+      <div class="step"><div class="step-num" aria-hidden="true">02</div><div class="step-ico">🔍</div><div class="step-ttl">Deep Scan Runs</div><p class="step-d">Our engine crawls websites across 50+ checkpoints or analyzes on-chain wallet data in real time.</p></div>
+      <div class="step"><div class="step-num" aria-hidden="true">03</div><div class="step-ico">🤖</div><div class="step-ttl">AI Analyzes Results</div><p class="step-d">ORBOT processes raw data and generates prioritized, actionable recommendations specific to your target.</p></div>
+      <div class="step"><div class="step-num" aria-hidden="true">04</div><div class="step-ico">📋</div><div class="step-ttl">Get Your Report</div><p class="step-d">Download a full PDF report or chat with ORBOT live to dive deeper into any finding.</p></div>
+    </div>
   </div>
 </section>
 
 <!-- AI AGENT -->
 <section class="ai-sec" id="ai-sec" aria-label="AI Agent ORBOT">
-  <div class="ai-in">
+  <div class="ai-inner">
     <div class="ai-l">
-      <div class="ai-badge"><div class="blinkdot"></div>AI AGENT ACTIVE</div>
+      <div class="ai-badge"><div class="blink"></div>AI Agent Active</div>
       <h2 class="ai-ttl">MEET<br><em>ORBOT</em><br>YOUR AI ANALYST</h2>
-      <p class="ai-desc">ORBOT is ORSCAN's built-in AI agent. Ask it anything about your scan results, request specific fixes, generate optimized copy, or get a competitor breakdown on demand.</p>
+      <p class="ai-desc">ORBOT is ORSCAN's built-in AI agent. Ask anything about your website scan or wallet analysis — get specific fixes, generated copy, or whale trading pattern breakdowns on demand.</p>
       <div class="ai-feats">
-        <div class="aif"><div class="aif-ico">💬</div><div><div class="aif-nm">Natural Language Q&A</div><p class="aif-d">Ask "Why is my SEO score low?" and get specific, actionable answers—not generic advice.</p></div></div>
-        <div class="aif"><div class="aif-ico">✍️</div><div><div class="aif-nm">Copy Rewriter</div><p class="aif-d">Ask ORBOT to rewrite your meta descriptions, headlines, or page copy for better rankings.</p></div></div>
-        <div class="aif"><div class="aif-ico">🗺️</div><div><div class="aif-nm">Fix Roadmap Generator</div><p class="aif-d">ORBOT creates a prioritized week-by-week action plan to fix every identified issue.</p></div></div>
-        <div class="aif"><div class="aif-ico">🔌</div><div><div class="aif-nm">Third-Party Integration</div><p class="aif-d">Connect ORBOT to your AI stack via API. Works with OpenAI, Anthropic, Gemini, and custom models.</p></div></div>
+        <div class="aif"><div class="aif-ico">🐋</div><div><div class="aif-ttl">Wallet Intelligence</div><p class="aif-desc">Ask "Is this wallet a bot?" or "What's this whale's strategy?" — ORBOT reads on-chain patterns.</p></div></div>
+        <div class="aif"><div class="aif-ico">💬</div><div><div class="aif-ttl">Natural Language Q&A</div><p class="aif-desc">Ask "Why is my SEO score low?" and get specific, data-backed answers from your actual scan results.</p></div></div>
+        <div class="aif"><div class="aif-ico">✍️</div><div><div class="aif-ttl">Copy Rewriter</div><p class="aif-desc">Request optimized meta descriptions, H1 tags, and page copy for better rankings and conversions.</p></div></div>
+        <div class="aif"><div class="aif-ico">🗺️</div><div><div class="aif-ttl">Fix Roadmap Generator</div><p class="aif-desc">ORBOT creates a prioritized, time-estimated action plan for every issue found in your scan.</p></div></div>
       </div>
     </div>
     <div class="ai-r">
-      <div class="ai-chat" role="region" aria-label="ORBOT chat demo">
-        <div class="ch-hdr">
-          <div class="ch-av">🤖</div>
+      <div class="chat-box" role="region" aria-label="ORBOT chat demo">
+        <div class="chat-hdr">
+          <div class="chat-avi">🤖</div>
           <div>
-            <div class="ch-nm">ORBOT</div>
-            <div class="ch-st"><span class="st-dot"></span>Online — AI Agent v2.4</div>
+            <div class="chat-name">ORBOT</div>
+            <div class="chat-status"><span class="status-dot"></span>Online — AI Agent v2.4</div>
           </div>
         </div>
-        <div class="ch-msgs" id="chatMsgs">
-          <div class="msg msg-a"><div class="msg-bbl">👋 I'm ORBOT. I've analyzed your website. SEO score is <strong>86/100</strong>—solid, but 3 critical issues are dragging it down. Want me to explain them?</div><div class="msg-t">ORBOT · just now</div></div>
-          <div class="msg msg-u"><div class="msg-bbl">Yes, what's the biggest issue?</div><div class="msg-t">You · just now</div></div>
-          <div class="msg msg-a"><div class="msg-bbl">Biggest issue: <strong>missing H1 tags on 4 pages</strong>. Google uses H1 to understand page context. Fix: add one unique H1 per page with your target keyword. Want me to write them for you?</div><div class="msg-t">ORBOT · just now</div></div>
+        <div class="chat-msgs" id="chatMsgs">
+          <div class="msg msg-bot"><div class="msg-bbl">👋 I'm ORBOT. I analyze websites AND crypto wallets. Your site's SEO is <strong>86/100</strong> — 3 issues found. Or paste a wallet to track whale activity. What would you like to explore?</div><div class="msg-time">ORBOT · just now</div></div>
+          <div class="msg msg-usr"><div class="msg-bbl">What's the biggest SEO issue?</div><div class="msg-time">You · just now</div></div>
+          <div class="msg msg-bot"><div class="msg-bbl">Your biggest issue: <strong>missing H1 tags on 4 pages</strong>. Google uses H1 to understand page context. Fix: add one unique H1 per page with your target keyword. Want me to write them for you?</div><div class="msg-time">ORBOT · just now</div></div>
         </div>
-        <div class="ch-inp">
-          <input type="text" id="chat-in" placeholder="Ask ORBOT about your site..." aria-label="Chat with ORBOT">
-          <button class="ch-send" id="chatSend" aria-label="Send">SEND</button>
+        <div class="chat-input">
+          <input type="text" id="chat-in" placeholder="Ask ORBOT about your site or a wallet..." aria-label="Chat with ORBOT">
+          <button class="chat-send" id="chatSendBtn" aria-label="Send">SEND</button>
         </div>
       </div>
-      <p style="font-family:'Space Mono',monospace;font-size:9px;color:#7a7670;letter-spacing:1px;margin-top:10px">* Full AI Agent on Premium plan. Demo mode active.</p>
+      <p style="font-family:'Space Mono',monospace;font-size:9px;color:#4A4740;letter-spacing:.5px;margin-top:10px">* Full AI Agent on Premium plan. Demo mode active.</p>
     </div>
   </div>
 </section>
 
 <!-- PRICING -->
 <section class="price-sec" id="price-sec" aria-label="Pricing">
-  <div style="max-width:900px;margin:0 auto">
-    <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#7a7670;margin-bottom:8px;display:flex;align-items:center;gap:10px"><span style="width:18px;height:1px;background:#5a5750;display:inline-block"></span>Pricing Plans</div>
-    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,70px);line-height:.94;margin-bottom:44px;-webkit-text-stroke:1px #c8c0b0;color:transparent">FREE OR PRO.<br>YOUR CALL.</h2>
+  <div class="price-inner">
+    <div class="price-eyebrow">Pricing Plans</div>
+    <h2 class="price-hl">FREE OR PRO.<br>YOUR CALL.</h2>
     <div class="price-grid">
-      <!-- FREE -->
       <div class="pc">
-        <div class="pt">Free Tier</div>
-        <div class="pn">$0</div>
-        <div class="pu">/ forever · no credit card needed</div>
-        <div class="pfeats">
-          <div class="pf inc"><div class="pchk">✓</div>3 scans per day</div>
-          <div class="pf inc"><div class="pchk">✓</div>SEO, Performance & Security modules</div>
-          <div class="pf inc"><div class="pchk">✓</div>Core Web Vitals report</div>
-          <div class="pf inc"><div class="pchk">✓</div>Mobile optimization check</div>
-          <div class="pf inc"><div class="pchk">✓</div>Schema markup validator</div>
-          <div class="pf"><div class="pchk">—</div>AI Agent (ORBOT)</div>
-          <div class="pf"><div class="pchk">—</div>Competitor analysis</div>
-          <div class="pf"><div class="pchk">—</div>PDF export</div>
-          <div class="pf"><div class="pchk">—</div>API access</div>
+        <div class="pc-tier">Free Tier</div>
+        <div class="pc-price">$0</div>
+        <div class="pc-per">/ forever · no credit card</div>
+        <div class="pc-feats">
+          <div class="pf on"><div class="pf-chk">✓</div>3 scans per day</div>
+          <div class="pf on"><div class="pf-chk">✓</div>SEO, Performance & Security modules</div>
+          <div class="pf on"><div class="pf-chk">✓</div>Core Web Vitals report</div>
+          <div class="pf on"><div class="pf-chk">✓</div>Mobile optimization check</div>
+          <div class="pf on"><div class="pf-chk">✓</div>🐋 Whale wallet scan (5/day)</div>
+          <div class="pf on"><div class="pf-chk">✓</div>Meme coin detection (basic)</div>
+          <div class="pf"><div class="pf-chk">—</div>AI Agent (ORBOT)</div>
+          <div class="pf"><div class="pf-chk">—</div>Whale alerts & notifications</div>
+          <div class="pf"><div class="pf-chk">—</div>PDF export</div>
         </div>
-        <button class="btn-pf btn-free" onclick="showToast('Free plan — start scanning now!')">START FREE</button>
+        <button class="pc-btn pc-btn-free" onclick="showToast('Free plan — start scanning now!')">START FREE</button>
       </div>
-      <!-- PRO -->
       <div class="pc pc-dark">
-        <div class="pop-bdg">MOST POPULAR</div>
-        <div class="pt">Pro / Premium</div>
-        <div class="pn">$19</div>
-        <div class="pu">/ month · cancel anytime</div>
-        <div class="pfeats">
-          <div class="pf inc"><div class="pchk">✓</div><strong>Unlimited scans</strong></div>
-          <div class="pf inc"><div class="pchk">✓</div>All 12 scan modules</div>
-          <div class="pf inc"><div class="pchk">✓</div><strong>ORBOT AI Agent</strong> — full access</div>
-          <div class="pf inc"><div class="pchk">✓</div>Competitor analysis (top 3)</div>
-          <div class="pf inc"><div class="pchk">✓</div>PDF & CSV export</div>
-          <div class="pf inc"><div class="pchk">✓</div>WCAG accessibility audit</div>
-          <div class="pf inc"><div class="pchk">✓</div>API access + webhooks</div>
-          <div class="pf inc"><div class="pchk">✓</div>White-label reports</div>
-          <div class="pf inc"><div class="pchk">✓</div>Priority support</div>
+        <div class="pop-tag">MOST POPULAR</div>
+        <div class="pc-tier">Pro / Premium</div>
+        <div class="pc-price">$19</div>
+        <div class="pc-per">/ month · cancel anytime</div>
+        <div class="pc-feats">
+          <div class="pf on"><div class="pf-chk">✓</div><strong>Unlimited website scans</strong></div>
+          <div class="pf on"><div class="pf-chk">✓</div>All 12 scan modules</div>
+          <div class="pf on"><div class="pf-chk">✓</div><strong>ORBOT AI Agent</strong> — full access</div>
+          <div class="pf on"><div class="pf-chk">✓</div>🐋 <strong>Unlimited whale scans</strong></div>
+          <div class="pf on"><div class="pf-chk">✓</div>Real-time whale alerts</div>
+          <div class="pf on"><div class="pf-chk">✓</div>Wallet clustering & bot detection</div>
+          <div class="pf on"><div class="pf-chk">✓</div>Competitor analysis (top 3)</div>
+          <div class="pf on"><div class="pf-chk">✓</div>PDF & CSV export</div>
+          <div class="pf on"><div class="pf-chk">✓</div>API access + webhooks</div>
         </div>
-        <button class="btn-pf btn-pro" onclick="showToast('Redirecting to checkout...')">GET PRO ACCESS</button>
+        <button class="pc-btn pc-btn-pro" onclick="showToast('Redirecting to checkout...')">GET PRO ACCESS</button>
       </div>
     </div>
-    <p style="font-family:'Space Mono',monospace;font-size:9px;color:#444;letter-spacing:2px;text-align:center;margin-top:18px">TEAMS & AGENCIES? <span style="color:#9a9690;text-decoration:underline;cursor:pointer" onclick="showToast('Contact: hello@orscan.io')">CONTACT FOR CUSTOM PRICING</span></p>
+    <p style="font-family:'Space Mono',monospace;font-size:9px;color:#4A4740;letter-spacing:1.5px;text-align:center;margin-top:16px">TEAMS & AGENCIES? <span style="color:#8A8680;text-decoration:underline;cursor:pointer" onclick="showToast('Contact: hello@orscan.io')">CONTACT FOR CUSTOM PRICING</span></p>
   </div>
 </section>
 
 <!-- TESTIMONIALS -->
 <section class="testi-sec" aria-label="Testimonials">
-  <div class="sec-hdr">
-    <div><div class="sec-kk">Social Proof</div><h2 class="sec-ttl">WHAT THEY<br><span class="out">SAY</span></h2></div>
-  </div>
-  <div class="testi-grid">
-    <div class="tc"><div class="tc-stars" aria-label="5 stars">★★★★★</div><p class="tc-q">"ORSCAN found 14 SEO issues our previous tool completely missed. Organic traffic went up 40% in 60 days after fixing them."</p><div class="tc-au"><div class="tc-av">AK</div><div><div class="tc-nm">Ahmad Kurniawan</div><div class="tc-rl">CTO · TechStartup.id</div></div></div></div>
-    <div class="tc"><div class="tc-stars" aria-label="5 stars">★★★★★</div><p class="tc-q">"The AI critique is brutally honest—exactly what I needed. ORBOT rewrote 3 pages of copy and our bounce rate dropped 22%."</p><div class="tc-au"><div class="tc-av">SR</div><div><div class="tc-nm">Sarah Rahmawati</div><div class="tc-rl">Founder · DigitalAgency.co</div></div></div></div>
-    <div class="tc"><div class="tc-stars" aria-label="5 stars">★★★★★</div><p class="tc-q">"I manage 20 client sites. The API integration saves me hours every week. The competitor analysis alone is worth the subscription."</p><div class="tc-au"><div class="tc-av">BM</div><div><div class="tc-nm">Budi Mahendra</div><div class="tc-rl">SEO Lead · Growth.co.id</div></div></div></div>
-    <div class="tc"><div class="tc-stars" aria-label="5 stars">★★★★★</div><p class="tc-q">"First scan revealed our security headers were completely misconfigured. Fixed in an hour. Literally priceless discovery."</p><div class="tc-au"><div class="tc-av">DP</div><div><div class="tc-nm">Dewi Pratiwi</div><div class="tc-rl">DevOps · Fintech Startup</div></div></div></div>
-    <div class="tc"><div class="tc-stars" aria-label="5 stars">★★★★★</div><p class="tc-q">"Best website scanner in 10 years of web development. Clean UX, accurate data, and the AI actually understands context."</p><div class="tc-au"><div class="tc-av">RH</div><div><div class="tc-nm">Rizky Handoko</div><div class="tc-rl">Full-Stack Dev · Freelance</div></div></div></div>
-    <div class="tc"><div class="tc-stars" aria-label="5 stars">★★★★★</div><p class="tc-q">"We use ORSCAN on every client delivery. The white-label report feature makes us look incredibly professional every time."</p><div class="tc-au"><div class="tc-av">NF</div><div><div class="tc-nm">Nina Fitriani</div><div class="tc-rl">Creative Director · Studio NF</div></div></div></div>
+  <div class="testi-inner">
+    <div class="sec-hdr">
+      <div><div class="sec-kicker">Social Proof</div><h2 class="sec-ttl">WHAT THEY<br><em>SAY</em></h2></div>
+    </div>
+    <div class="testi-grid">
+      <div class="tc"><div class="tc-stars" aria-label="5 stars">★★★★★</div><p class="tc-q">"ORSCAN found 14 SEO issues our previous tool missed completely. Organic traffic went up 40% in 60 days."</p><div class="tc-au"><div class="tc-avi">AK</div><div><div class="tc-name">Ahmad Kurniawan</div><div class="tc-role">CTO · TechStartup.id</div></div></div></div>
+      <div class="tc"><div class="tc-stars" aria-label="5 stars">★★★★★</div><p class="tc-q">"The whale scanner caught a 7-figure wallet accumulating BONK before the 3x pump. This tool pays for itself."</p><div class="tc-au"><div class="tc-avi">MR</div><div><div class="tc-name">Marco R.</div><div class="tc-role">Crypto Trader · Solana Degen</div></div></div></div>
+      <div class="tc"><div class="tc-stars" aria-label="5 stars">★★★★★</div><p class="tc-q">"ORBOT rewrote 3 pages of copy and our bounce rate dropped 22%. The AI actually understands context."</p><div class="tc-au"><div class="tc-avi">SR</div><div><div class="tc-name">Sarah Rahmawati</div><div class="tc-role">Founder · DigitalAgency.co</div></div></div></div>
+      <div class="tc"><div class="tc-stars" aria-label="5 stars">★★★★★</div><p class="tc-q">"First scan revealed our security headers were completely misconfigured. Fixed in an hour. Priceless."</p><div class="tc-au"><div class="tc-avi">DP</div><div><div class="tc-name">Dewi Pratiwi</div><div class="tc-role">DevOps · Fintech Startup</div></div></div></div>
+      <div class="tc"><div class="tc-stars" aria-label="5 stars">★★★★★</div><p class="tc-q">"I track 12 whale wallets daily. ORSCAN's alerts are faster than anything else on the market. No competition."</p><div class="tc-au"><div class="tc-avi">JL</div><div><div class="tc-name">Jake L.</div><div class="tc-role">DeFi Analyst · Independent</div></div></div></div>
+      <div class="tc"><div class="tc-stars" aria-label="5 stars">★★★★★</div><p class="tc-q">"We use ORSCAN on every client delivery. White-label PDF reports make us look incredibly professional."</p><div class="tc-au"><div class="tc-avi">NF</div><div><div class="tc-name">Nina Fitriani</div><div class="tc-role">Creative Director · Studio NF</div></div></div></div>
+    </div>
   </div>
 </section>
 
 <!-- APP DOWNLOAD -->
-<section class="app-sec" id="app-sec" aria-label="Download mobile app">
-  <div class="app-in">
+<section class="app-sec" id="app-sec" aria-label="Download app">
+  <div class="app-inner">
     <div class="app-l">
-      <div class="app-kk">Mobile App</div>
+      <div class="app-eyebrow">Mobile App</div>
       <h2 class="app-ttl">SCAN ON<br>THE <em>GO</em></h2>
-      <p class="app-desc">ORSCAN is available on iOS and Android. Scan websites, review full reports, chat with ORBOT, and get push notifications for critical site issues—all from your pocket.</p>
-      <div class="store-btns">
-
-        <!-- APPLE APP STORE -->
-        <a href="#" class="stbtn" aria-label="Download on the App Store" onclick="showToast('App Store — Coming Soon!');return false;">
-          <div class="st-ico">
-            <!-- Apple logo SVG -->
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M17.05 12.54c-.02-2.35 1.92-3.48 2.01-3.54-1.1-1.6-2.8-1.82-3.4-1.84-1.44-.15-2.82.86-3.55.86-.73 0-1.85-.84-3.05-.82-1.57.03-3.02.92-3.83 2.33-1.64 2.83-.42 7.04 1.17 9.34.78 1.12 1.7 2.38 2.92 2.33 1.18-.05 1.62-.76 3.04-.76s1.83.76 3.06.73c1.27-.02 2.07-1.14 2.83-2.27.44-.64.77-1.29 1.17-1.79-2.36-.9-2.37-4.38-2.37-4.57z" fill="currentColor"/>
-              <path d="M14.93 5.57c.65-.79 1.09-1.9.97-3a4.3 4.3 0 00-2.75 1.42c-.61.7-1.14 1.81-.98 2.88 1.05.08 2.1-.53 2.76-1.3z" fill="currentColor"/>
+      <p class="app-desc">ORSCAN is available on iOS and Android. Scan websites, track whale wallets, get meme coin alerts, and chat with ORBOT — all from your phone.</p>
+      <div class="store-row">
+        <a href="#" class="store-btn" aria-label="Download on App Store" onclick="showToast('App Store — Coming Soon!');return false;">
+          <div class="store-ico">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M17.05 12.54c-.02-2.35 1.92-3.48 2.01-3.54-1.1-1.6-2.8-1.82-3.4-1.84-1.44-.15-2.82.86-3.55.86-.73 0-1.85-.84-3.05-.82-1.57.03-3.02.92-3.83 2.33-1.64 2.83-.42 7.04 1.17 9.34.78 1.12 1.7 2.38 2.92 2.33 1.18-.05 1.62-.76 3.04-.76s1.83.76 3.06.73c1.27-.02 2.07-1.14 2.83-2.27.44-.64.77-1.29 1.17-1.79-2.36-.9-2.37-4.38-2.37-4.57z" fill="currentColor"/><path d="M14.93 5.57c.65-.79 1.09-1.9.97-3a4.3 4.3 0 00-2.75 1.42c-.61.7-1.14 1.81-.98 2.88 1.05.08 2.1-.53 2.76-1.3z" fill="currentColor"/>
             </svg>
           </div>
-          <div>
-            <span class="st-lbl-sub">Download on the</span>
-            <span class="st-lbl-main">APP STORE</span>
-          </div>
+          <div><div class="store-sub">Download on the</div><div class="store-name">APP STORE</div></div>
         </a>
-
-        <!-- GOOGLE PLAY STORE -->
-        <a href="#" class="stbtn" aria-label="Get it on Google Play" onclick="showToast('Google Play — Coming Soon!');return false;">
-          <div class="st-ico">
-            <!-- Google Play triangle logo SVG -->
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3.18 2.29A1 1 0 002 3.2v17.6a1 1 0 001.18.91l10.44-8.8a1 1 0 000-1.54L3.18 2.29z" fill="currentColor" opacity="0.9"/>
-              <path d="M14.34 11.37L4.6 2.63l8.2 4.73 1.54 4.01z" fill="currentColor" opacity="0.7"/>
-              <path d="M14.34 12.63l-1.54 4.01-8.2 4.73 9.74-8.74z" fill="currentColor" opacity="0.5"/>
-              <path d="M15.56 11.07l-1.22.3.08.63 1.14-.93zM15.56 12.93l-1.14-.93-.08.63 1.22.3z" fill="currentColor"/>
-              <path d="M22 12a1 1 0 00-.58-.9l-5.86-3.03-1.56 3.93 1.56 3.93L21.42 12.9A1 1 0 0022 12z" fill="currentColor" opacity="0.8"/>
+        <a href="#" class="store-btn" aria-label="Get on Google Play" onclick="showToast('Google Play — Coming Soon!');return false;">
+          <div class="store-ico">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M3.18 2.29A1 1 0 002 3.2v17.6a1 1 0 001.18.91l10.44-8.8a1 1 0 000-1.54L3.18 2.29z" fill="currentColor" opacity=".9"/>
+              <path d="M14.34 11.37L4.6 2.63l8.2 4.73 1.54 4.01z" fill="currentColor" opacity=".6"/>
+              <path d="M14.34 12.63l-1.54 4.01-8.2 4.73 9.74-8.74z" fill="currentColor" opacity=".4"/>
+              <path d="M22 12a1 1 0 00-.58-.9l-5.86-3.03-1.56 3.93 1.56 3.93L21.42 12.9A1 1 0 0022 12z" fill="currentColor" opacity=".75"/>
             </svg>
           </div>
-          <div>
-            <span class="st-lbl-sub">Get it on</span>
-            <span class="st-lbl-main">GOOGLE PLAY</span>
-          </div>
+          <div><div class="store-sub">Get it on</div><div class="store-name">GOOGLE PLAY</div></div>
         </a>
-
       </div>
-      <p style="font-family:'Space Mono',monospace;font-size:9px;color:#7a7670;letter-spacing:2px;margin-top:16px">LAUNCHING Q2 2025 · <span style="color:#9a9690;text-decoration:underline;cursor:pointer" onclick="showToast('Added to waitlist!')">JOIN WAITLIST →</span></p>
+      <p style="font-family:'Space Mono',monospace;font-size:9px;color:#4A4740;letter-spacing:1.5px">LAUNCHING Q2 2025 · <span style="color:#6A6660;text-decoration:underline;cursor:pointer" onclick="showToast('Added to waitlist! 🎉')">JOIN WAITLIST →</span></p>
     </div>
     <div class="app-r">
-      <!-- PHONE MOCKUP -->
       <div class="phone" role="img" aria-label="ORSCAN mobile app preview">
         <div class="ph-hdr">
-          <svg viewBox="0 0 14 14" fill="none" width="14" height="14">
-            <circle cx="7" cy="7" r="5.5" stroke="#f3f2ed" stroke-width="1.5"/>
-            <circle cx="7" cy="7" r="2.2" fill="#f3f2ed"/>
-          </svg>
-          <span class="ph-logo">ORSCAN</span>
+          <svg viewBox="0 0 14 14" fill="none" width="14"><circle cx="7" cy="7" r="5.5" stroke="#E8E4DA" stroke-width="1.5"/><circle cx="7" cy="7" r="2.2" fill="#E8E4DA"/></svg>
+          <span class="ph-logo-txt">ORSCAN</span>
           <span class="ph-dot"></span>
         </div>
         <div class="ph-body">
-          <div class="ph-url">https://example.com ▸</div>
-          <div class="ph-scs">
+          <div class="ph-url">🐋 7xKp...3mNR · Solana</div>
+          <div class="ph-scores">
             <div class="ph-sc"><span class="ph-sc-n">86</span><span class="ph-sc-l">SEO</span></div>
             <div class="ph-sc"><span class="ph-sc-n">72</span><span class="ph-sc-l">PERF</span></div>
             <div class="ph-sc"><span class="ph-sc-n">91</span><span class="ph-sc-l">SEC</span></div>
-            <div class="ph-sc"><span class="ph-sc-n">64</span><span class="ph-sc-l">A11Y</span></div>
           </div>
-          <div style="font-family:'Space Mono',monospace;font-size:7px;color:#6a6660;letter-spacing:1px;margin-bottom:5px">// ISSUES FOUND</div>
-          <div class="ph-iss"><span class="ph-d"></span>Missing H1 tags (4 pages)</div>
-          <div class="ph-iss"><span class="ph-d"></span>Images not compressed</div>
-          <div class="ph-iss"><span class="ph-d"></span>No meta descriptions</div>
-          <div class="ph-foot">ASK ORBOT → FIX ROADMAP</div>
+          <div class="ph-issues">
+            <div class="ph-row"><span class="ph-dot2"></span>Whale: +$284K BONK</div>
+            <div class="ph-row"><span class="ph-dot2"></span>Missing H1 (4 pages)</div>
+            <div class="ph-row"><span class="ph-dot2"></span>Images uncompressed</div>
+          </div>
         </div>
       </div>
     </div>
@@ -835,34 +1207,36 @@ footer{background:#2e2c28;color:#c8c4ba;border-top:var(--bdr)}
 </section>
 
 <!-- FAQ -->
-<section class="faq-sec" aria-label="Frequently asked questions">
-  <div style="max-width:800px;margin:0 auto">
-    <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#7a7670;margin-bottom:8px;display:flex;align-items:center;gap:10px"><span style="width:18px;height:1px;background:#5a5750;display:inline-block"></span>FAQ</div>
-    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,66px);line-height:.94;-webkit-text-stroke:1px #c8c0b0;color:transparent">COMMON QUESTIONS</h2>
+<section class="faq-sec" aria-label="FAQ">
+  <div class="faq-inner">
+    <div class="faq-hl-row">
+      <div class="faq-eyebrow">FAQ</div>
+      <h2 class="faq-ttl">COMMON QUESTIONS</h2>
+    </div>
     <div class="faq-list">
       <div class="faq-item">
-        <button class="fq-q" aria-expanded="false"><span class="fq-qt">Is ORSCAN really free? What are the limits?</span><span class="fq-arr" aria-hidden="true">+</span></button>
-        <div class="fq-a">Yes, ORSCAN's free tier is genuinely free with no credit card required. You get 3 scans per day covering SEO, Performance, Security, Mobile, and Schema modules. For unlimited scans, AI Agent, competitor analysis, and PDF exports, upgrade to Pro.</div>
+        <button class="faq-q" aria-expanded="false"><span class="faq-qt">Is ORSCAN really free? What are the limits?</span><span class="faq-arr" aria-hidden="true">+</span></button>
+        <div class="faq-a">Yes — genuinely free, no credit card needed. Free users get 3 website scans/day plus 5 whale wallet scans/day, covering SEO, Performance, Security, Mobile, and Schema modules. Upgrade to Pro for unlimited scans, real-time whale alerts, AI Agent access, and PDF exports.</div>
       </div>
       <div class="faq-item">
-        <button class="fq-q" aria-expanded="false"><span class="fq-qt">How accurate is the SEO analysis?</span><span class="fq-arr" aria-hidden="true">+</span></button>
-        <div class="fq-a">ORSCAN uses real crawling engines combined with Google Search Console signals. Our SEO scores correlate 94% with Google's actual ranking signals. We scan what Googlebot actually sees—no guessing.</div>
+        <button class="faq-q" aria-expanded="false"><span class="faq-qt">How does the Whale & Meme Coin Scanner work?</span><span class="faq-arr" aria-hidden="true">+</span></button>
+        <div class="faq-a">Paste any Solana wallet address into the Wallet Scanner tab. ORSCAN pulls real-time on-chain data including token holdings, recent transactions, PnL, and meme coin accumulation patterns. ORBOT (Pro) can then analyze the wallet's trading strategy and flag suspicious bot-like behavior.</div>
       </div>
       <div class="faq-item">
-        <button class="fq-q" aria-expanded="false"><span class="fq-qt">What is ORBOT and how does the AI Agent work?</span><span class="fq-arr" aria-hidden="true">+</span></button>
-        <div class="fq-a">ORBOT is ORSCAN's AI analyst powered by large language models. It reads your full scan report and answers questions in natural language. Ask it to explain issues, generate fix plans, rewrite copy, or compare competitors. Available on Premium plans.</div>
+        <button class="faq-q" aria-expanded="false"><span class="faq-qt">Which blockchains are supported for wallet scanning?</span><span class="faq-arr" aria-hidden="true">+</span></button>
+        <div class="faq-a">Solana is fully supported with real-time data. Ethereum, Bitcoin, Polygon, and Base are available in beta. We're prioritizing Solana because that's where the meme coin action is. More chains coming in Q3 2025.</div>
       </div>
       <div class="faq-item">
-        <button class="fq-q" aria-expanded="false"><span class="fq-qt">Can I integrate ORSCAN with my own tools or AI?</span><span class="fq-arr" aria-hidden="true">+</span></button>
-        <div class="fq-a">Yes. Premium users get full API access with webhooks. Trigger scans programmatically, receive results as JSON, and feed them into your own AI pipeline (OpenAI, Anthropic, Gemini, etc.) or CI/CD workflows.</div>
+        <button class="faq-q" aria-expanded="false"><span class="faq-qt">How accurate is the SEO analysis?</span><span class="faq-arr" aria-hidden="true">+</span></button>
+        <div class="faq-a">ORSCAN uses real crawling engines combined with Google Search Console signals. Our SEO scores correlate 94% with Google's actual ranking signals. We scan what Googlebot actually sees — no guessing.</div>
       </div>
       <div class="faq-item">
-        <button class="fq-q" aria-expanded="false"><span class="fq-qt">Is the mobile app available now?</span><span class="fq-arr" aria-hidden="true">+</span></button>
-        <div class="fq-a">The ORSCAN mobile app for iOS and Android is launching Q2 2025. Join the waitlist to get early access and a 30-day free Pro trial on launch day.</div>
+        <button class="faq-q" aria-expanded="false"><span class="faq-qt">What is ORBOT and how does the AI Agent work?</span><span class="faq-arr" aria-hidden="true">+</span></button>
+        <div class="faq-a">ORBOT is ORSCAN's AI analyst powered by large language models. It reads your scan report and answers questions in plain English — explaining issues, generating fix plans, rewriting copy, or analyzing whale wallet patterns. Available on Premium plans.</div>
       </div>
       <div class="faq-item">
-        <button class="fq-q" aria-expanded="false"><span class="fq-qt">Does ORSCAN work for e-commerce and non-English sites?</span><span class="fq-arr" aria-hidden="true">+</span></button>
-        <div class="fq-a">Absolutely. ORSCAN supports all languages and has specific modules for e-commerce SEO including product schema, review markup, and breadcrumbs. It works on Shopify, WooCommerce, and any custom-built site.</div>
+        <button class="faq-q" aria-expanded="false"><span class="faq-qt">Can I get alerts when a whale wallet makes a move?</span><span class="faq-arr" aria-hidden="true">+</span></button>
+        <div class="faq-a">Yes — Pro users can set custom wallet alerts. You'll get notified via email, push notification (mobile app), or webhook when a tracked wallet buys, sells, or transfers tokens above your custom threshold.</div>
       </div>
     </div>
   </div>
@@ -872,52 +1246,70 @@ footer{background:#2e2c28;color:#c8c4ba;border-top:var(--bdr)}
 <footer>
   <div class="ft-top">
     <div class="ft-col">
-      <div class="ft-lw">
-        <div class="ft-lsq" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
-            <circle cx="12" cy="12" r="9" stroke="#f3f2ed" stroke-width="2"/>
-            <circle cx="12" cy="12" r="4" fill="#f3f2ed"/>
-            <line x1="12" y1="0" x2="12" y2="3" stroke="#f3f2ed" stroke-width="2"/>
-            <line x1="12" y1="21" x2="12" y2="24" stroke="#f3f2ed" stroke-width="2"/>
-            <line x1="0" y1="12" x2="3" y2="12" stroke="#f3f2ed" stroke-width="2"/>
-            <line x1="21" y1="12" x2="24" y2="12" stroke="#f3f2ed" stroke-width="2"/>
+      <div class="ft-brand-row">
+        <div class="ft-logo-sq" aria-hidden="true">
+          <svg viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="11" r="8.5" stroke="#1A1916" stroke-width="1.5"/>
+            <circle cx="11" cy="11" r="3.5" fill="#1A1916"/>
+            <line x1="11" y1="0" x2="11" y2="2.5" stroke="#1A1916" stroke-width="1.5"/>
+            <line x1="11" y1="19.5" x2="11" y2="22" stroke="#1A1916" stroke-width="1.5"/>
+            <line x1="0" y1="11" x2="2.5" y2="11" stroke="#1A1916" stroke-width="1.5"/>
+            <line x1="19.5" y1="11" x2="22" y2="11" stroke="#1A1916" stroke-width="1.5"/>
           </svg>
         </div>
-        <div class="ft-ltt">ORSCAN</div>
+        <div class="ft-brand-name">ORSCAN</div>
       </div>
-      <p class="ft-tag">AI-powered website intelligence. Scan, analyze, and dominate your niche with brutally honest insights.</p>
+      <p class="ft-tagline">AI-powered website & crypto wallet intelligence. Scan websites, track whale wallets, detect meme coin trends — all in one place.</p>
       <div class="ft-soc">
-        <a href="#" class="soc" aria-label="Twitter/X">𝕏</a>
-        <a href="#" class="soc" aria-label="LinkedIn">in</a>
-        <a href="#" class="soc" aria-label="GitHub">⌥</a>
-        <a href="#" class="soc" aria-label="YouTube">▶</a>
+        <a href="https://x.com/Orscanagent" target="_blank" rel="noopener" class="soc-btn" aria-label="Follow ORSCAN on X">
+          𝕏 &nbsp;@Orscanagent
+        </a>
+        <a href="https://github.com/orscan?tab=repositories" target="_blank" rel="noopener" class="soc-btn" aria-label="ORSCAN on GitHub">
+          ⌥ &nbsp;GitHub
+        </a>
       </div>
+      <!-- Orynth Badge in footer too -->
+      <a href="https://orynth.dev/projects/orscan" target="_blank" rel="noopener">
+        <img src="https://orynth.dev/api/badge/orscan?theme=dark&style=default" alt="Featured on Orynth" width="200" height="62" style="border-radius:6px;opacity:.8;margin-top:4px;display:block" onerror="this.style.display='none'"/>
+      </a>
     </div>
     <div class="ft-col">
       <div class="ft-ct">Product</div>
       <div class="ft-lks">
-        <a href="#">Features</a><a href="#">Pricing</a><a href="#">API Docs</a>
-        <a href="#">Changelog</a><a href="#">Roadmap</a><a href="#">Mobile App</a>
+        <a href="#feat-sec">Features</a>
+        <a href="#whale-sec">🐋 Whale Scanner</a>
+        <a href="#price-sec">Pricing</a>
+        <a href="#">API Docs</a>
+        <a href="#">Changelog</a>
+        <a href="#">Mobile App</a>
       </div>
     </div>
     <div class="ft-col">
       <div class="ft-ct">Resources</div>
       <div class="ft-lks">
-        <a href="#">Documentation</a><a href="#">SEO Guide</a><a href="#">Blog</a>
-        <a href="#">Case Studies</a><a href="#">Integrations</a><a href="#">Status</a>
+        <a href="#">Documentation</a>
+        <a href="#">SEO Guide</a>
+        <a href="#">Whale Tracking 101</a>
+        <a href="#">Blog</a>
+        <a href="#">Case Studies</a>
+        <a href="https://github.com/orscan?tab=repositories" target="_blank" rel="noopener">Open Source</a>
       </div>
     </div>
     <div class="ft-col">
       <div class="ft-ct">Company</div>
       <div class="ft-lks">
-        <a href="#">About ORSCAN</a><a href="#">Careers</a><a href="#">Contact</a>
-        <a href="#">Press Kit</a><a href="#">Partners</a><a href="#">Support</a>
+        <a href="#">About ORSCAN</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+        <a href="https://x.com/Orscanagent" target="_blank" rel="noopener">𝕏 Twitter/X</a>
+        <a href="https://github.com/orscan?tab=repositories" target="_blank" rel="noopener">GitHub</a>
+        <a href="#">Support</a>
       </div>
     </div>
   </div>
   <div class="ft-bot">
-    <span class="ft-copy">© 2025 ORSCAN · ALL RIGHTS RESERVED · WEBSITE INTELLIGENCE PLATFORM</span>
-    <div class="ft-leg">
+    <span class="ft-copy">© 2025 ORSCAN · ALL RIGHTS RESERVED</span>
+    <div class="ft-legal">
       <a href="#">Privacy Policy</a>
       <a href="#">Terms of Service</a>
       <a href="#">Cookie Policy</a>
@@ -928,43 +1320,80 @@ footer{background:#2e2c28;color:#c8c4ba;border-top:var(--bdr)}
 <div id="toast" role="alert" aria-live="polite"></div>
 
 <script>
-// ─── HAMBURGER ─────────────────────────────
+// ── HAMBURGER ────────────────────────────────────────
 const hambBtn = document.getElementById('hambBtn');
 const mobMenu = document.getElementById('mob-menu');
 hambBtn.addEventListener('click', () => {
   const open = mobMenu.classList.toggle('open');
   hambBtn.setAttribute('aria-expanded', open);
-  const spans = hambBtn.querySelectorAll('span');
-  spans[0].style.transform = open ? 'rotate(45deg) translate(5px,5px)' : '';
-  spans[1].style.opacity = open ? '0' : '1';
-  spans[2].style.transform = open ? 'rotate(-45deg) translate(5px,-5px)' : '';
+  const [s1,s2,s3] = hambBtn.querySelectorAll('span');
+  s1.style.transform = open ? 'rotate(45deg) translate(5px,5px)' : '';
+  s2.style.opacity = open ? '0' : '1';
+  s3.style.transform = open ? 'rotate(-45deg) translate(5px,-5px)' : '';
 });
 function closeMob() {
   mobMenu.classList.remove('open');
-  hambBtn.setAttribute('aria-expanded', false);
+  hambBtn.setAttribute('aria-expanded','false');
   hambBtn.querySelectorAll('span').forEach(s => { s.style.transform=''; s.style.opacity=''; });
 }
 
-// ─── SCAN CHECKBOXES ───────────────────────
-document.querySelectorAll('.sopt').forEach(el => {
+// ── TAB SWITCHER ─────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.stab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+  document.querySelectorAll('.scan-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).setAttribute('aria-selected','true');
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+
+// ── CHAIN SELECT ─────────────────────────────────────
+function selectChain(el) {
+  document.querySelectorAll('.chain-opt').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── SCAN MODULE CHECKBOXES ───────────────────────────
+document.querySelectorAll('.smod').forEach(el => {
   el.addEventListener('click', () => {
-    el.classList.toggle('chk');
-    el.querySelector('input').checked = el.classList.contains('chk');
+    el.classList.toggle('on');
+    el.querySelector('input').checked = el.classList.contains('on');
   });
 });
 
-// ─── SCAN LOGIC ────────────────────────────
+// ── WEBSITE SCAN ─────────────────────────────────────
 let scanning = false;
 const scanBtn = document.getElementById('scanBtn');
 const urlIn = document.getElementById('url-in');
-scanBtn.addEventListener('click', startScan);
-urlIn.addEventListener('keydown', e => { if(e.key === 'Enter') startScan(); });
 
-function startScan() {
+scanBtn.addEventListener('click', startWebScan);
+urlIn.addEventListener('keydown', e => { if(e.key==='Enter') startWebScan(); });
+
+function startWebScan() {
   if (scanning) return;
   let url = urlIn.value.trim();
-  if (!url) { showToast('⚠ Enter a valid URL first'); return; }
+  if (!url) { showToast('⚠ Please enter a website URL'); return; }
   if (!url.startsWith('http')) { url = 'https://' + url; urlIn.value = url; }
+  runScan(url, 'website');
+}
+
+// ── WALLET SCAN ──────────────────────────────────────
+const walletBtn = document.getElementById('walletBtn');
+const walletIn = document.getElementById('wallet-in');
+
+walletBtn.addEventListener('click', startWalletScan);
+walletIn.addEventListener('keydown', e => { if(e.key==='Enter') startWalletScan(); });
+
+function startWalletScan() {
+  if (scanning) return;
+  const addr = walletIn.value.trim();
+  if (!addr) { showToast('⚠ Please enter a wallet address'); return; }
+  if (addr.length < 32) { showToast('⚠ Invalid wallet address format'); return; }
+  showToast('🐋 Scanning wallet on Solana...');
+  setTimeout(() => showToast('✓ Wallet scan complete! 847 SOL · 12 tokens · PnL +$24,400'), 2800);
+}
+
+// ── SCAN ENGINE ──────────────────────────────────────
+function runScan(url, type) {
   scanning = true;
   scanBtn.textContent = 'SCANNING...';
   scanBtn.disabled = true;
@@ -972,31 +1401,33 @@ function startScan() {
   const prog = document.getElementById('prog');
   prog.style.display = 'block';
   prog.scrollIntoView({ behavior:'smooth', block:'center' });
+
   const ids = ['ps1','ps2','ps3','ps4','ps5','ps6'];
   const labels = ['RESOLVING DNS...','PARSING HTML...','AUDITING SEO...','TESTING PERFORMANCE...','SCANNING SECURITY...','AI ANALYSIS...'];
-  ids.forEach(id => document.getElementById(id).className = 'ps');
-  const pf = document.getElementById('pf');
-  pf.style.width = '0%';
+  ids.forEach(id => { const el = document.getElementById(id); el.className='ps'; });
+  const bar = document.getElementById('progBar');
+  bar.style.width = '0%';
+
   let step = 0;
   const iv = setInterval(() => {
     if (step < ids.length) {
-      if (step > 0) { const prev = document.getElementById(ids[step-1]); prev.classList.remove('active'); prev.classList.add('done'); }
-      document.getElementById(ids[step]).classList.add('active');
-      document.getElementById('prog-st').textContent = labels[step];
+      if (step > 0) { const prev = document.getElementById(ids[step-1]); prev.classList.remove('on'); prev.classList.add('done'); }
+      document.getElementById(ids[step]).classList.add('on');
+      document.getElementById('prog-lbl').textContent = labels[step];
       const pct = Math.round(((step+1)/ids.length)*100);
-      pf.style.width = pct + '%';
-      document.getElementById('prog-pc').textContent = pct + '%';
+      bar.style.width = pct+'%';
+      document.getElementById('prog-pct').textContent = pct+'%';
       step++;
     } else {
       clearInterval(iv);
-      ids.forEach(id => { const el = document.getElementById(id); el.classList.remove('active'); el.classList.add('done'); });
-      document.getElementById('prog-st').textContent = 'SCAN COMPLETE!';
+      ids.forEach(id => { const el = document.getElementById(id); el.classList.remove('on'); el.classList.add('done'); });
+      document.getElementById('prog-lbl').textContent = 'SCAN COMPLETE!';
       setTimeout(() => showResults(url), 500);
     }
   }, 660);
 }
 
-function rnd(mn,mx) { return Math.floor(Math.random()*(mx-mn+1))+mn; }
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 
 function showResults(url) {
   scanning = false;
@@ -1005,129 +1436,139 @@ function showResults(url) {
   const domain = url.replace(/https?:\/\//,'').split('/')[0].replace('www.','');
   document.getElementById('resFav').textContent = domain[0].toUpperCase();
   document.getElementById('resUrl').textContent = url;
-  document.getElementById('resTtl').textContent = domain.toUpperCase();
+  document.getElementById('resDomain').textContent = domain.toUpperCase();
+
   const scores = { seo:rnd(62,95), perf:rnd(50,88), sec:rnd(72,99), a11y:rnd(45,78), ux:rnd(55,88) };
+  // update score circles
+  const scoreMap = {'seo':'sc-seo','perf':'sc-perf','sec':'sc-sec','a11y':'sc-a11y','ux':'sc-ux'};
+  const rscMap = {'seo':0,'perf':1,'sec':2,'a11y':3,'ux':4};
+  const rscs = document.querySelectorAll('.rsc');
   Object.entries(scores).forEach(([k,v]) => {
-    const el = document.getElementById('sc-'+k);
-    if (el) { el.textContent = v; const p = el.closest('.rsc'); if (p) p.className = 'rsc '+(v>=80?'hi':v>=60?'md':'lo'); }
+    const el = document.getElementById(scoreMap[k]);
+    if(el){el.textContent=v;}
+    const rsc = rscs[rscMap[k]];
+    if(rsc){rsc.className='rsc '+(v>=80?'hi':v>=60?'md':'lo');}
   });
-  document.getElementById('resMain').innerHTML = buildMain();
-  document.getElementById('resSide').innerHTML = buildSide();
+
+  document.getElementById('resMain').innerHTML = buildIssues();
+  document.getElementById('resSide').innerHTML = buildSidebar();
   const rs = document.getElementById('res-sec');
   rs.style.display = 'block';
   rs.scrollIntoView({ behavior:'smooth' });
   showToast('✓ Scan complete for ' + domain);
 }
 
-function buildMain() {
-  return `
-<div class="rb"><div class="rb-hdr"><div class="rb-ico">🚨</div><div class="rb-ttl">CRITICAL ISSUES (3)</div><div class="rb-bdg fl">NEEDS FIX</div></div>
-<div class="issue-list">
-  <div class="issue crit"><div class="issue-ico">🚨</div><div><div class="i-type">SEO · CRITICAL</div><div class="i-ttl">Missing Meta Descriptions</div><div class="i-desc">4 pages have no meta description. This directly impacts click-through rate from search results. Write unique, keyword-rich descriptions under 160 characters.</div></div></div>
-  <div class="issue crit"><div class="issue-ico">⚡</div><div><div class="i-type">PERFORMANCE · CRITICAL</div><div class="i-ttl">Images Not Compressed</div><div class="i-desc">Found 12 images over 500KB. Use WebP format and compress all images. Estimated page load improvement: 1.8 seconds on mobile.</div></div></div>
-  <div class="issue crit"><div class="issue-ico">🔒</div><div><div class="i-type">SECURITY · CRITICAL</div><div class="i-ttl">Missing Security Headers</div><div class="i-desc">No Content-Security-Policy header detected. Add CSP, X-Frame-Options, and X-Content-Type-Options headers immediately.</div></div></div>
-</div></div>
-<div class="rb"><div class="rb-hdr"><div class="rb-ico">⚠️</div><div class="rb-ttl">WARNINGS (2)</div><div class="rb-bdg wn">REVIEW</div></div>
-<div class="issue-list">
-  <div class="issue warn"><div class="issue-ico">⚠️</div><div><div class="i-type">SEO · WARNING</div><div class="i-ttl">Duplicate H1 Tags</div><div class="i-desc">3 pages share identical H1 tags. Each page needs a unique H1 with its target keyword for Google to distinguish page context.</div></div></div>
-  <div class="issue warn"><div class="issue-ico">📱</div><div><div class="i-type">MOBILE · WARNING</div><div class="i-ttl">Touch Targets Too Small</div><div class="i-desc">7 clickable elements are under the 44×44px minimum touch target size, causing accidental taps on mobile devices.</div></div></div>
-</div></div>
-<div class="rb"><div class="rb-hdr"><div class="rb-ico">✅</div><div class="rb-ttl">PASSING CHECKS</div><div class="rb-bdg ok">ALL GOOD</div></div>
-<div class="issue-list">
-  <div class="issue good"><div class="issue-ico">✅</div><div><div class="i-type">SEO · PASS</div><div class="i-ttl">XML Sitemap Detected</div><div class="i-desc">A valid sitemap.xml was found and correctly configured. Ensure it's submitted to Google Search Console and updated regularly.</div></div></div>
-  <div class="issue good"><div class="issue-ico">✅</div><div><div class="i-type">PERFORMANCE · PASS</div><div class="i-ttl">HTTP/2 Enabled</div><div class="i-desc">HTTP/2 protocol is active, enabling multiplexed requests and reducing latency for all users.</div></div></div>
-</div></div>`;
-}
+function buildIssues(){return`
+<div class="issue-grp">
+  <div class="ig-hdr"><div class="ig-ico">🚨</div><div class="ig-ttl">Critical Issues (3)</div><div class="ig-badge fl">Needs Fix</div></div>
+  <div class="issue-list">
+    <div class="issue crit"><div class="i-ico">🚨</div><div><div class="i-mod">SEO · Critical</div><div class="i-ttl">Missing Meta Descriptions</div><div class="i-desc">4 pages have no meta description. This directly impacts click-through rate from search results. Write unique descriptions under 160 characters.</div></div></div>
+    <div class="issue crit"><div class="i-ico">⚡</div><div><div class="i-mod">Performance · Critical</div><div class="i-ttl">Images Not Compressed</div><div class="i-desc">Found 12 images over 500KB. Use WebP format and compress all images. Estimated improvement: 1.8s faster on mobile.</div></div></div>
+    <div class="issue crit"><div class="i-ico">🔒</div><div><div class="i-mod">Security · Critical</div><div class="i-ttl">Missing Security Headers</div><div class="i-desc">No Content-Security-Policy header detected. Add CSP, X-Frame-Options, and X-Content-Type-Options immediately.</div></div></div>
+  </div>
+</div>
+<div class="issue-grp">
+  <div class="ig-hdr"><div class="ig-ico">⚠️</div><div class="ig-ttl">Warnings (2)</div><div class="ig-badge wn">Review</div></div>
+  <div class="issue-list">
+    <div class="issue warn"><div class="i-ico">⚠️</div><div><div class="i-mod">SEO · Warning</div><div class="i-ttl">Duplicate H1 Tags</div><div class="i-desc">3 pages share identical H1 tags. Each page needs a unique H1 with its target keyword for Google to understand page context.</div></div></div>
+    <div class="issue warn"><div class="i-ico">📱</div><div><div class="i-mod">Mobile · Warning</div><div class="i-ttl">Touch Targets Too Small</div><div class="i-desc">7 buttons are under the 44×44px minimum touch target size, causing accidental taps on mobile devices.</div></div></div>
+  </div>
+</div>
+<div class="issue-grp">
+  <div class="ig-hdr"><div class="ig-ico">✅</div><div class="ig-ttl">Passing Checks</div><div class="ig-badge ok">All Good</div></div>
+  <div class="issue-list">
+    <div class="issue good"><div class="i-ico">✅</div><div><div class="i-mod">SEO · Pass</div><div class="i-ttl">XML Sitemap Detected</div><div class="i-desc">A valid sitemap.xml was found. Make sure it's submitted to Google Search Console and updated regularly.</div></div></div>
+    <div class="issue good"><div class="i-ico">✅</div><div><div class="i-mod">Performance · Pass</div><div class="i-ttl">HTTP/2 Enabled</div><div class="i-desc">HTTP/2 is active, enabling multiplexed requests and reduced latency for all visitors.</div></div></div>
+  </div>
+</div>`;}
 
-function buildSide() {
-  return `
-<div class="sb-blk"><div class="sb-ttl">TECH STACK</div><div class="mn-list">
-  <div class="mn-item"><span>CMS</span><span class="mn-v ok">WordPress</span></div>
-  <div class="mn-item"><span>Server</span><span class="mn-v ok">Nginx</span></div>
-  <div class="mn-item"><span>CDN</span><span class="mn-v wn">None</span></div>
-  <div class="mn-item"><span>SSL</span><span class="mn-v ok">Valid</span></div>
-  <div class="mn-item"><span>HTTP/2</span><span class="mn-v ok">Enabled</span></div>
+function buildSidebar(){return`
+<div class="sb"><div class="sb-ttl">Tech Stack</div><div class="sb-list">
+  <div class="sb-row"><span>CMS</span><span class="sb-v ok">WordPress</span></div>
+  <div class="sb-row"><span>Server</span><span class="sb-v ok">Nginx</span></div>
+  <div class="sb-row"><span>CDN</span><span class="sb-v wn">None</span></div>
+  <div class="sb-row"><span>SSL</span><span class="sb-v ok">Valid</span></div>
+  <div class="sb-row"><span>HTTP/2</span><span class="sb-v ok">Enabled</span></div>
 </div></div>
-<div class="sb-blk"><div class="sb-ttl">LOAD TIMES</div><div class="mn-list">
-  <div class="mn-item"><span>TTFB</span><span class="mn-v wn">820ms</span></div>
-  <div class="mn-item"><span>LCP</span><span class="mn-v wn">3.4s</span></div>
-  <div class="mn-item"><span>FID</span><span class="mn-v ok">45ms</span></div>
-  <div class="mn-item"><span>CLS</span><span class="mn-v ok">0.04</span></div>
-  <div class="mn-item"><span>Page Size</span><span class="mn-v wn">4.2MB</span></div>
+<div class="sb"><div class="sb-ttl">Load Times</div><div class="sb-list">
+  <div class="sb-row"><span>TTFB</span><span class="sb-v wn">820ms</span></div>
+  <div class="sb-row"><span>LCP</span><span class="sb-v wn">3.4s</span></div>
+  <div class="sb-row"><span>FID</span><span class="sb-v ok">45ms</span></div>
+  <div class="sb-row"><span>CLS</span><span class="sb-v ok">0.04</span></div>
+  <div class="sb-row"><span>Page Size</span><span class="sb-v wn">4.2MB</span></div>
 </div></div>
-<div class="sb-blk"><div class="sb-ttl">SEO SIGNALS</div><div class="mn-list">
-  <div class="mn-item"><span>Title Tags</span><span class="mn-v ok">12/14</span></div>
-  <div class="mn-item"><span>Meta Desc</span><span class="mn-v fl">8/14</span></div>
-  <div class="mn-item"><span>H1 Tags</span><span class="mn-v wn">Dupes</span></div>
-  <div class="mn-item"><span>Schema</span><span class="mn-v ok">Found</span></div>
-  <div class="mn-item"><span>Canonical</span><span class="mn-v ok">Set</span></div>
+<div class="sb"><div class="sb-ttl">SEO Signals</div><div class="sb-list">
+  <div class="sb-row"><span>Title Tags</span><span class="sb-v ok">12/14</span></div>
+  <div class="sb-row"><span>Meta Desc</span><span class="sb-v fl">8/14</span></div>
+  <div class="sb-row"><span>H1 Tags</span><span class="sb-v wn">Dupes</span></div>
+  <div class="sb-row"><span>Schema</span><span class="sb-v ok">Found</span></div>
+  <div class="sb-row"><span>Canonical</span><span class="sb-v ok">Set</span></div>
 </div></div>
-<div class="sb-blk"><div class="sb-ttl">ASK ORBOT</div>
-<p style="font-size:12px;color:#666;line-height:1.5;margin-bottom:11px">Get AI explanations and fix recommendations for every issue above.</p>
-<a href="#ai-sec" style="display:block;text-align:center;padding:11px;background:var(--ink);color:var(--paper);font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;border-radius:3px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">CHAT WITH ORBOT →</a>
-</div>`;
-}
+<div class="sb"><div class="sb-ttl">Ask ORBOT</div>
+  <p style="font-family:'DM Sans',sans-serif;font-size:12px;color:var(--stone);line-height:1.5;margin-bottom:10px">Get AI explanations and fix plans for every issue above.</p>
+  <a href="#ai-sec" style="display:block;text-align:center;padding:10px;background:var(--ink);color:var(--paper);font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;border-radius:6px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">CHAT WITH ORBOT →</a>
+</div>`;}
 
-// ─── AI CHAT ───────────────────────────────
+// ── AI CHAT ──────────────────────────────────────────
 const chatIn = document.getElementById('chat-in');
-const chatSend = document.getElementById('chatSend');
+const chatSendBtn = document.getElementById('chatSendBtn');
 const chatMsgs = document.getElementById('chatMsgs');
-const bots = [
-  "Based on the scan, your biggest quick win is adding meta descriptions to all pages. I can generate optimized ones—just share your page titles.",
-  "Your LCP of 3.4s is above Google's 2.5s threshold. Main fix: compress images to WebP and enable Cloudflare CDN. This alone should cut load time by ~40%.",
-  "I've spotted 3 keywords your competitors rank for that you're missing. Add them to your H2 tags and expand content by 200-300 words per page.",
-  "Security headers are missing from your server config. Add X-Frame-Options DENY, X-Content-Type-Options nosniff, and a Content-Security-Policy header.",
-  "Your accessibility score of 64 needs work: 6 images lack alt text, 3 form inputs have no labels, and 2 sections fail color contrast ratios.",
-  "My recommended priority order: (1) Fix meta descriptions — 1hr, big SEO win. (2) Compress images — 2hrs, major speed boost. (3) Add security headers — 30min, critical fix."
+const orbotReplies = [
+  "Based on the scan, the highest-impact fix is adding meta descriptions to all pages. I can write optimized ones — just share your page titles.",
+  "Your LCP of 3.4s is above Google's 2.5s threshold. Main fix: compress images to WebP and enable a CDN like Cloudflare. Estimated speed boost: ~40%.",
+  "For this wallet: I see 847 SOL + 12 tokens. The wallet has been quietly accumulating BONK over the last 72 hours — classic pre-pump behavior. Watch this one.",
+  "Security headers are missing. Add X-Frame-Options DENY, X-Content-Type-Options nosniff, and a Content-Security-Policy header to your server config.",
+  "Accessibility score of 64 needs work: 6 images lack alt text, 3 form inputs have no labels, and 2 sections fail color contrast ratios.",
+  "My recommended priority: (1) Fix meta descriptions — 1hr, big SEO win. (2) Compress images — 2hrs, major speed boost. (3) Add security headers — 30min, critical fix."
 ];
-let bIdx = 0;
+let replyIdx = 0;
 
 function sendChat() {
   const txt = chatIn.value.trim();
   if (!txt) return;
   chatIn.value = '';
   const um = document.createElement('div');
-  um.className = 'msg msg-u';
-  um.innerHTML = `<div class="msg-bbl">${txt.replace(/</g,'&lt;')}</div><div class="msg-t">You · just now</div>`;
+  um.className='msg msg-usr';
+  um.innerHTML=`<div class="msg-bbl">${txt.replace(/</g,'&lt;')}</div><div class="msg-time">You · just now</div>`;
   chatMsgs.appendChild(um);
   const ty = document.createElement('div');
-  ty.className = 'msg msg-a';
-  ty.innerHTML = `<div class="typing"><span></span><span></span><span></span></div>`;
+  ty.className='msg msg-bot';
+  ty.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';
   chatMsgs.appendChild(ty);
   chatMsgs.scrollTop = chatMsgs.scrollHeight;
   setTimeout(() => {
     ty.remove();
     const bm = document.createElement('div');
-    bm.className = 'msg msg-a';
-    bm.innerHTML = `<div class="msg-bbl">${bots[bIdx % bots.length]}</div><div class="msg-t">ORBOT · just now</div>`;
+    bm.className='msg msg-bot';
+    bm.innerHTML=`<div class="msg-bbl">${orbotReplies[replyIdx%orbotReplies.length]}</div><div class="msg-time">ORBOT · just now</div>`;
     chatMsgs.appendChild(bm);
     chatMsgs.scrollTop = chatMsgs.scrollHeight;
-    bIdx++;
+    replyIdx++;
   }, 1400);
 }
-chatSend.addEventListener('click', sendChat);
+chatSendBtn.addEventListener('click', sendChat);
 chatIn.addEventListener('keydown', e => { if(e.key==='Enter') sendChat(); });
 
-// ─── FAQ ───────────────────────────────────
-document.querySelectorAll('.fq-q').forEach(btn => {
+// ── FAQ ──────────────────────────────────────────────
+document.querySelectorAll('.faq-q').forEach(btn => {
   btn.addEventListener('click', () => {
     const item = btn.closest('.faq-item');
     const was = item.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i => { i.classList.remove('open'); i.querySelector('.fq-q').setAttribute('aria-expanded','false'); });
+    document.querySelectorAll('.faq-item').forEach(i => { i.classList.remove('open'); i.querySelector('.faq-q').setAttribute('aria-expanded','false'); });
     if (!was) { item.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
   });
 });
 
-// ─── TOAST ─────────────────────────────────
-let tt;
+// ── TOAST ─────────────────────────────────────────────
+let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
-  clearTimeout(tt);
-  tt = setTimeout(() => t.classList.remove('show'), 3000);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ─── SMOOTH SCROLL ─────────────────────────
+// ── SMOOTH SCROLL ─────────────────────────────────────
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     const id = a.getAttribute('href').slice(1);
@@ -1136,22 +1577,55 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-// ─── SCROLL REVEAL ─────────────────────────
+// ── SCROLL REVEAL ─────────────────────────────────────
 const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.style.opacity = '1';
-      entry.target.style.transform = 'translateY(0)';
-      observer.unobserve(entry.target);
-    }
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); }
   });
-}, { threshold: 0.1 });
-document.querySelectorAll('.fc,.step,.tc').forEach(el => {
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(18px)';
-  el.style.transition = 'opacity .5s ease, transform .5s ease';
-  observer.observe(el);
+}, { threshold: 0.08 });
+document.querySelectorAll('.fc,.step,.tc,.wcard,.issue-grp').forEach(el => {
+  el.classList.add('fade'); observer.observe(el);
 });
+
+// ── WHALE FEED ANIMATION ──────────────────────────────
+const whaleTokens = ['BONK','WIF','POPCAT','MEW','BOME','SLERF','PONKE','MYRO','SMOLE','GIGA'];
+const whaleWallets = ['7xKp...3mNR','9fQz...8vWL','3pRn...6kYT','BcXm...2hDA','Ks4J...9pZQ','Rq7W...1nFB','5mLc...4pXE'];
+let feedRunning = false;
+
+function startWhaleFeed() {
+  if (feedRunning) return;
+  feedRunning = true;
+  setInterval(() => {
+    const feed = document.getElementById('whaleFeed');
+    if (!feed || !document.getElementById('whale-sec')) return;
+    const isBuy = Math.random() > 0.38;
+    const amt = (Math.random() * 280 + 15).toFixed(0);
+    const token = whaleTokens[Math.floor(Math.random()*whaleTokens.length)];
+    const wallet = whaleWallets[Math.floor(Math.random()*whaleWallets.length)];
+    const type = isBuy ? (Math.random()>0.5?'🐋':'🚀') : '🔴';
+    const amtClass = isBuy ? 'buy' : 'sell';
+    const amtStr = isBuy ? `+$${Number(amt)*1000>100000?Math.floor(amt*1.2):Math.floor(amt*0.8)},${Math.floor(Math.random()*900)+100}` : `-$${Math.floor(amt*0.9)},${Math.floor(Math.random()*900)+100}`;
+    const row = document.createElement('div');
+    row.className = 'wf-row';
+    row.style.opacity='0';row.style.transform='translateY(-8px)';row.style.transition='all .3s';
+    row.innerHTML=`<div class="wf-type">${type}</div><div class="wf-info"><div class="wf-wallet">${wallet}</div><div class="wf-token">${token} · Solana</div></div><div class="wf-amount ${amtClass}">${amtStr}</div><div class="wf-time">just now</div>`;
+    feed.insertBefore(row, feed.firstChild);
+    setTimeout(() => { row.style.opacity='1'; row.style.transform='translateY(0)'; }, 10);
+    if (feed.children.length > 6) { const last = feed.lastChild; last.style.opacity='0'; setTimeout(()=>last.remove(),300); }
+    // update times
+    Array.from(feed.children).forEach((r,i) => {
+      const t = r.querySelector('.wf-time');
+      if(t && i>0) t.textContent = i===1?'3s ago':i===2?'9s ago':i===3?'18s ago':i===4?'28s ago':'40s ago';
+    });
+  }, 4500);
+}
+
+// start feed when whale section is visible
+const whaleObserver = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) { startWhaleFeed(); whaleObserver.disconnect(); }
+}, { threshold: 0.2 });
+const whaleSec = document.getElementById('whale-sec');
+if (whaleSec) whaleObserver.observe(whaleSec);
 </script>
 </body>
 </html>
