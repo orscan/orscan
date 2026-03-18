@@ -1228,7 +1228,7 @@ Question: What is the highest-impact fix I should do first?
 
     <div class="callout tip">
       <span class="callout-icon">💳</span>
-      <div class="callout-body"><strong>No credit card required</strong> for the free tier. Pro plan billed monthly, cancel anytime. Enterprise pricing available at <code>hello@orscan.io</code>.</div>
+      <div class="callout-body"><strong>No credit card required</strong> for the free tier. Pro plan billed monthly, cancel anytime. Enterprise pricing available at <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="335b565f5f5c735c414050525d1d5a5c">[email&#160;protected]</a></code>.</div>
     </div>
   </section>
 
@@ -1445,14 +1445,14 @@ docker run -d \
       <a href="https://docs.orscan.io">Docs</a>
       <a href="https://github.com/orscan/orscan">GitHub</a>
       <a href="https://status.orscan.io">Status</a>
-      <a href="mailto:hello@orscan.io">Contact</a>
+      <a href="/cdn-cgi/l/email-protection#4129242d2d2e012e333222202f6f282e">Contact</a>
     </div>
     <div class="footer-copy">MIT License · © 2025 ORSCAN</div>
   </footer>
 
 </div><!-- /page -->
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ─── COPY BUTTON ──────────────────────────────────────────
 function copyInstall(btn) {
   const cmd = `curl -X POST https://api.orscan.io/v1/scan \\\n  -H "Content-Type: application/json" \\\n  -d '{"url":"https://yourwebsite.com"}'`;
